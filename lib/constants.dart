@@ -7,3 +7,6 @@ const colorSchemeSeed = Color(0x006750A4);
 const defaultPadding = 10.0;
 const defaultMargin = 10.0;
 const defaultRadius = 10.0;
+
+const timeoutDefaultValue = 5;
+const threadsDefaultValue = 5;

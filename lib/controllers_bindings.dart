@@ -5,6 +5,6 @@ class ControllersBindings implements Bindings {
 // default dependency
   @override
   void dependencies() {
-    Get.lazyPut<HomeController>(() => HomeController());
+    Get.put<HomeController>(HomeController(), permanent: true);
   }
 }

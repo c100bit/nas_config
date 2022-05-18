@@ -3,10 +3,8 @@ import 'package:get/get.dart';
 import 'package:nas_config/constants.dart';
 import 'package:nas_config/home_controller.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
-
-  final controller = Get.find<HomeController>();
+class HomePage extends GetView<HomeController> {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +22,7 @@ class HomePage extends StatelessWidget {
         children: [
           const Expanded(
             child: WrapWidget(
+              margin: EdgeInsets.all(defaultMargin),
               child: TextListWidget(
                 title: 'devices_list_hint',
               ),
@@ -72,14 +71,12 @@ class LogsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SizedBox(
       width: double.infinity,
-      child: Expanded(
-        child: Scrollbar(
-          thumbVisibility: true,
-          child: SingleChildScrollView(
-            child: SelectableText(
-              '''dfs ''',
-              style: TextStyle(fontSize: 16),
-            ),
+      child: Scrollbar(
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          child: SelectableText(
+            '''dfs ''',
+            style: TextStyle(fontSize: 16),
           ),
         ),
       ),
@@ -87,10 +84,8 @@ class LogsWidget extends StatelessWidget {
   }
 }
 
-class ControlsWidget extends StatelessWidget {
-  ControlsWidget({Key? key}) : super(key: key);
-
-  final controller = Get.find<HomeController>();
+class ControlsWidget extends GetView<HomeController> {
+  const ControlsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,16 +95,15 @@ class ControlsWidget extends StatelessWidget {
           child: Column(
             children: [
               Obx(() => SelectWidget<int>(
-                    title: 'timeout',
-                    value: controller.timeout.value,
-                    items: controller.timeoutValues,
-                    onChanged: (val) => controller.updateTimeout(val),
-                  )),
-              SelectWidget<int>(
+                  title: 'timeout',
+                  value: controller.timeout.value,
+                  items: controller.timeoutValues,
+                  onChanged: (val) => controller.updateTimeout(val))),
+              Obx(() => SelectWidget<int>(
                   title: 'threads',
                   value: controller.threads.value,
                   items: controller.threadsValues,
-                  onChanged: (val) => controller.updateThreads(val)),
+                  onChanged: (val) => controller.updateThreads(val))),
             ],
           ),
         ),
@@ -117,10 +111,12 @@ class ControlsWidget extends StatelessWidget {
           child: Column(
             children: [
               TextField(
+                controller: controller.loginController,
                 decoration: InputDecoration(labelText: 'login'.tr),
               ),
               TextField(
                 obscureText: true,
+                controller: controller.passwordController,
                 decoration: InputDecoration(labelText: 'password'.tr),
               ),
             ],
@@ -130,15 +126,17 @@ class ControlsWidget extends StatelessWidget {
       Row(
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: controller.perform,
             child: Padding(
               padding: EdgeInsets.all(defaultPadding),
-              child: Text(
-                'start'.tr,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              child: Obx(() => Text(
+                    controller.status.value == Status.stopped
+                        ? 'start'.tr
+                        : 'stop'.tr,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  )),
             ),
           ),
         ],

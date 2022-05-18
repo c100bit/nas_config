@@ -13,6 +13,7 @@ final Map<String, String> enUS = {
   'login': 'Login',
   'password': 'Password',
   'start': 'START',
+  'stop': 'STOP',
   'app_title': 'NAS CONFIG'
 };
 

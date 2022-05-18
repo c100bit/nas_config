@@ -6,8 +6,9 @@ import 'package:nas_config/controllers_bindings.dart';
 import 'package:nas_config/pages/home_page.dart';
 
 void main() async {
-  //WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   //await configureDependencies();
+  ControllersBindings().dependencies();
   runApp(const MyApp());
 }
 
@@ -20,9 +21,8 @@ class MyApp extends StatelessWidget {
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('en', 'US'),
       translationsKeys: AppTranslation.translationsKeys,
-      title: 'Flutter Demo',
+      title: 'app_title'.tr,
       debugShowCheckedModeBanner: false,
-      initialBinding: ControllersBindings(),
       theme: ThemeData(
         scaffoldBackgroundColor: bgColor,
         canvasColor: secondaryColor,
