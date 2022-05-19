@@ -1,4 +1,4 @@
-import 'package:nas_config/models/settings_model.dart';
+import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/services/storage_provider.dart';
 
 class StorageRepository {
@@ -6,8 +6,7 @@ class StorageRepository {
 
   StorageRepository(this._storage);
 
-  void writeSettings(SettingsModel settings) =>
-      _storage.writeSettings(settings);
+  void writeAppModel(AppModel model) => _storage.writeAppModel(model);
 
-  SettingsModel readSettings() => _storage.readSettings();
+  AppModel? readAppModel() => _storage.readAppModel();
 }

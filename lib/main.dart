@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nas_config/core/app_translation.dart';
 import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/core/app_bindings.dart';
 import 'package:nas_config/pages/home_page.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,11 +25,27 @@ class MyApp extends StatelessWidget {
       title: 'app_title'.tr,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: bgColor,
-        canvasColor: secondaryColor,
-        colorSchemeSeed: colorSchemeSeed,
-        brightness: Brightness.dark,
-        useMaterial3: true,
+          useMaterial3: true,
+          brightness: Brightness.dark,
+          colorSchemeSeed: colorSchemeSeed,
+          scaffoldBackgroundColor: bgColor,
+          appBarTheme:
+              AppBarTheme.of(context).copyWith(backgroundColor: bgColor),
+          cardTheme: CardTheme.of(context).copyWith(color: secondaryColor),
+          textTheme:
+              GoogleFonts.latoTextTheme(Theme.of(context).textTheme.copyWith(
+                    bodyText2: TextStyle(color: Color(0xFFadaeb5)),
+                  ))),
+      builder: (context, widget) => ResponsiveWrapper.builder(
+        BouncingScrollWrapper.builder(context, widget!),
+        minWidth: 350,
+        defaultScale: true,
+        breakpoints: const [
+          ResponsiveBreakpoint.resize(350, name: MOBILE),
+          ResponsiveBreakpoint.autoScale(600, name: TABLET),
+          ResponsiveBreakpoint.resize(800, name: DESKTOP),
+          ResponsiveBreakpoint.autoScale(1700, name: 'XL'),
+        ],
       ),
       home: const HomePage(),
     );

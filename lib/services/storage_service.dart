@@ -1,14 +1,14 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:nas_config/core/constants.dart';
 
 class StorageService extends GetxService {
-  late final GetStorage _box;
+  final GetStorage _box;
 
-  Future<StorageService> init() async {
+  StorageService(this._box);
+
+  static Future<StorageService> init() async {
     await GetStorage.init();
-    _box = GetStorage();
-    return this;
+    return StorageService(GetStorage());
   }
 
   String? read(String key) {

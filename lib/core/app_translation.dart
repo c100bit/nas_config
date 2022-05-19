@@ -8,6 +8,7 @@ abstract class AppTranslation {
 final Map<String, String> enUS = {
   'devices_list_hint': 'Place here devices ip list',
   'commands_list_hint': 'Place here commands to execute',
+  'logs_hint': 'Logs will be here...',
   'timeout': 'Timeout:',
   'threads': 'Threads:',
   'login': 'Login',
