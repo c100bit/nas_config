@@ -10,3 +10,5 @@ const defaultRadius = 10.0;
 
 const timeoutDefaultValue = 5;
 const threadsDefaultValue = 5;
+
+const settingsKey = 'settingsKey';

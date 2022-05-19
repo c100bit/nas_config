@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nas_config/app_translation.dart';
-import 'package:nas_config/constants.dart';
-import 'package:nas_config/controllers_bindings.dart';
+import 'package:nas_config/core/app_translation.dart';
+import 'package:nas_config/core/constants.dart';
+import 'package:nas_config/core/app_bindings.dart';
 import 'package:nas_config/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await configureDependencies();
-  ControllersBindings().dependencies();
+  await AppBindings().dependencies();
   runApp(const MyApp());
 }
 
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }

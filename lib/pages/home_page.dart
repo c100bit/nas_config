@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nas_config/constants.dart';
-import 'package:nas_config/home_controller.dart';
+import 'package:nas_config/core/constants.dart';
+import 'package:nas_config/controllers/home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
