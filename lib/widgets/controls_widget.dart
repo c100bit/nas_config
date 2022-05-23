@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' as get_x;
 import 'package:nas_config/controllers/home_controller.dart';
 import 'package:nas_config/core/constants.dart';
+import 'package:nas_config/widgets/shared/controls_dialog.dart';
 import 'package:nas_config/widgets/shared/select_widget.dart';
 import 'package:nas_config/widgets/shared/wrap_widget.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
-class ControlsWidget extends GetView<HomeController> {
+class ControlsWidget extends get_x.GetView<HomeController> {
   const ControlsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WrapWidget(
-        margin: const EdgeInsets.only(bottom: defaultMargin),
+        margin: ResponsiveValue<EdgeInsets>(context,
+            defaultValue: const EdgeInsets.only(bottom: defaultMargin),
+            valueWhen: [
+              const Condition.smallerThan(
+                name: TABLET,
+                value: EdgeInsets.only(
+                  left: defaultMargin,
+                  right: defaultMargin,
+                  bottom: defaultMargin,
+                ),
+              )
+            ]).value,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -19,12 +32,12 @@ class ControlsWidget extends GetView<HomeController> {
               Expanded(
                 child: Column(
                   children: [
-                    Obx(() => SelectWidget<int>(
+                    get_x.Obx(() => SelectWidget<int>(
                         title: 'timeout'.tr,
                         value: controller.appModel().settings.timeout,
                         items: controller.appModel().timeoutValues,
                         onChanged: (val) => controller.updateTimeout(val))),
-                    Obx(() => SelectWidget<int>(
+                    get_x.Obx(() => SelectWidget<int>(
                         title: 'threads'.tr,
                         value: controller.appModel().settings.threads,
                         items: controller.appModel().threadsValues,
@@ -50,16 +63,21 @@ class ControlsWidget extends GetView<HomeController> {
                 ),
               ),
             ]),
-            ElevatedButton(
-              onPressed: controller.perform,
-              child: Padding(
-                padding: const EdgeInsets.all(defaultPadding),
-                child: Obx(() => Text(
-                      controller.status.value == Status.stopped
-                          ? 'start'.tr
-                          : 'stop'.tr,
-                    )),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => controller.perform(ControlsDialog(context)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(defaultPadding),
+                    child: get_x.Obx(() => Text(
+                          controller.status == Status.stopped
+                              ? 'start'.tr
+                              : 'stop'.tr,
+                        )),
+                  ),
+                ),
+              ],
             ),
           ],
         ));

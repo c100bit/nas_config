@@ -5,6 +5,7 @@ import 'package:nas_config/widgets/commands_widget.dart';
 import 'package:nas_config/widgets/controls_widget.dart';
 import 'package:nas_config/widgets/devices_widget.dart';
 import 'package:nas_config/widgets/logs_widget.dart';
+import 'package:nas_config/widgets/shared/info_dialog.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class HomePage extends get_x.GetView<HomeController> {
@@ -12,6 +13,7 @@ class HomePage extends get_x.GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final infoDialog = InfoDialog(context);
     final tabletRow = ResponsiveWrapper.of(context).isSmallerThan(TABLET)
         ? ResponsiveRowColumnType.COLUMN
         : ResponsiveRowColumnType.ROW;
@@ -21,8 +23,10 @@ class HomePage extends get_x.GetView<HomeController> {
           title: Text('app_title'.tr),
           centerTitle: true,
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.light)),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.help))
+            IconButton(
+              onPressed: infoDialog.show,
+              icon: const Icon(Icons.help),
+            )
           ],
         ),
         body: ResponsiveRowColumn(

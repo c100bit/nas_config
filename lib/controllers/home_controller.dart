@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/services/storage_repository.dart';
+import 'package:nas_config/widgets/shared/controls_dialog.dart';
 
 enum Status { stopped, started }
 
@@ -12,7 +12,9 @@ class HomeController extends GetxController {
 
   final settingsChangedInterval = const Duration(milliseconds: 1000);
 
-  final status = Status.stopped.obs;
+  final _status = Status.stopped.obs;
+  get status => _status.value;
+  updateStatus(Status val) => _status(val);
 
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
@@ -22,20 +24,20 @@ class HomeController extends GetxController {
 
   HomeController(this._storageRepository);
 
-  updateStatus(Status val) => status(val);
+  void perform(ControlsDialog dialog) {
+    status == Status.stopped
+        ? dialog.startDialog(_startPerforming)
+        : dialog.stopDialog(_stopPerforming);
+  }
 
-  Future<void> perform() async {
-    Get.defaultDialog(
-        title: 'Остановить?',
-        middleText: "",
-        backgroundColor: secondaryColor,
-        titleStyle: TextStyle(color: textColor),
-        middleTextStyle: TextStyle(color: textColor),
-        textConfirm: "Confirm",
-        textCancel: "Cancel",
-        radius: defaultRadius);
-
+  void _startPerforming() {
+    print('startPerforming');
     updateStatus(Status.started);
+  }
+
+  void _stopPerforming() {
+    print('stopPerforming');
+    updateStatus(Status.stopped);
   }
 
   void updateTimeout(int? val) => appModel.update((model) =>

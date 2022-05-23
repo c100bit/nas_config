@@ -13,6 +13,7 @@ class AppTheme {
         colorSchemeSeed: colorSchemeSeed,
         scaffoldBackgroundColor: bgColor,
         canvasColor: secondaryColor,
+        focusColor: focusColor,
         appBarTheme: const AppBarTheme(
           backgroundColor: bgColor,
           scrolledUnderElevation: 0,
@@ -30,6 +31,7 @@ class AppTheme {
 
   TextTheme get _textTheme =>
       GoogleFonts.latoTextTheme(Theme.of(_context).textTheme.copyWith(
-          bodyText2: const TextStyle(color: textColor),
+          bodyText2: const TextStyle(color: textColor, fontSize: bodyTextSize),
+          caption: const TextStyle(color: textColor, fontSize: captionSize),
           button: const TextStyle(color: Colors.blue, fontSize: btnFontSize)));
 }
