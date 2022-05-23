@@ -25,61 +25,64 @@ class ControlsWidget extends get_x.GetView<HomeController> {
                 ),
               )
             ]).value,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    get_x.Obx(() => SelectWidget<int>(
-                        title: 'timeout'.tr,
-                        value: controller.appModel().settings.timeout,
-                        items: controller.appModel().timeoutValues,
-                        onChanged: (val) => controller.updateTimeout(val))),
-                    get_x.Obx(() => SelectWidget<int>(
-                        title: 'threads'.tr,
-                        value: controller.appModel().settings.threads,
-                        items: controller.appModel().threadsValues,
-                        onChanged: (val) => controller.updateThreads(val))),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: controller.loginController,
-                      style: Theme.of(context).textTheme.bodyText2,
-                      decoration: InputDecoration(labelText: 'login'.tr),
-                    ),
-                    TextField(
-                      obscureText: true,
-                      style: Theme.of(context).textTheme.bodyText2,
-                      controller: controller.passwordController,
-                      decoration: InputDecoration(labelText: 'password'.tr),
-                    ),
-                  ],
-                ),
-              ),
-            ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () => controller.perform(ControlsDialog(context)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(defaultPadding),
-                    child: get_x.Obx(() => Text(
-                          controller.status == Status.stopped
-                              ? 'start'.tr
-                              : 'stop'.tr,
-                        )),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      get_x.Obx(() => SelectWidget<int>(
+                          title: 'timeout'.tr,
+                          value: controller.appModel().settings.timeout,
+                          items: controller.appModel().timeoutValues,
+                          onChanged: (val) => controller.updateTimeout(val))),
+                      get_x.Obx(() => SelectWidget<int>(
+                          title: 'threads'.tr,
+                          value: controller.appModel().settings.threads,
+                          items: controller.appModel().threadsValues,
+                          onChanged: (val) => controller.updateThreads(val))),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ],
+                Expanded(
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: controller.loginController,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        decoration: InputDecoration(labelText: 'login'.tr),
+                      ),
+                      TextField(
+                        obscureText: true,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        controller: controller.passwordController,
+                        decoration: InputDecoration(labelText: 'password'.tr),
+                      ),
+                    ],
+                  ),
+                ),
+              ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        controller.perform(ControlsDialog(context)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: get_x.Obx(() => Text(
+                            controller.status == Status.stopped
+                                ? 'start'.tr
+                                : 'stop'.tr,
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ));
   }
 }

@@ -1,16 +1,27 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:nas_config/core/app_theme.dart';
 import 'package:nas_config/core/app_translation.dart';
-import 'package:nas_config/core/constants.dart';
+
 import 'package:nas_config/core/app_bindings.dart';
+import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/pages/home_page.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:desktop_window/desktop_window.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppBindings().dependencies();
+
+  if (!kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.windows ||
+          defaultTargetPlatform == TargetPlatform.linux ||
+          defaultTargetPlatform == TargetPlatform.macOS)) {
+    await DesktopWindow.setMinWindowSize(const Size(appMinWSize, appMinHSize));
+  }
+
   runApp(const MyApp());
 }
 
@@ -28,10 +39,10 @@ class MyApp extends StatelessWidget {
       theme: AppTheme(context).current(),
       builder: (context, widget) => ResponsiveWrapper.builder(
         BouncingScrollWrapper.builder(context, widget!),
-        minWidth: 350,
+        minWidth: 280,
         defaultScale: true,
         breakpoints: const [
-          ResponsiveBreakpoint.resize(350, name: MOBILE),
+          ResponsiveBreakpoint.resize(280, name: MOBILE),
           ResponsiveBreakpoint.autoScale(600, name: TABLET),
           ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ResponsiveBreakpoint.autoScale(1700, name: 'XL'),

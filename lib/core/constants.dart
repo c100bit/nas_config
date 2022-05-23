@@ -21,3 +21,6 @@ const timeoutDefaultValue = 5;
 const threadsDefaultValue = 5;
 
 const appModelKey = 'appModelKey';
+
+const appMinWSize = 280.0;
+const appMinHSize = 780.0;
