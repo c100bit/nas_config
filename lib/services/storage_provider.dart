@@ -14,7 +14,6 @@ class StorageProvider {
 
   AppModel? readAppModel() {
     final data = _storageService.read(appModelKey);
-    print(data);
     return data != null ? AppModel.fromJson(jsonDecode(data)) : null;
   }
 }

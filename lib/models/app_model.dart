@@ -2,9 +2,9 @@ import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/models/settings.dart';
 
 class AppModel {
-  final List<String> commands;
-  final List<String> devices;
-  final Settings settings;
+  List<String> commands;
+  List<String> devices;
+  Settings settings;
 
   final timeoutValues = timeoutSelectValues;
   final threadsValues = threadsSelectValues;
@@ -22,16 +22,16 @@ class AppModel {
 
   factory AppModel.fromJson(Map<String, dynamic> json) {
     return AppModel(
-        commands: json['commands'],
-        devices: json['devices'],
-        settings: json['settings']);
+        commands: json['commands']?.cast<String>(),
+        devices: json['devices']?.cast<String>(),
+        settings: Settings.fromJson(json['settings']));
   }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'devices': devices,
       'commands': commands,
-      'settings': settings
+      'settings': settings.toJson()
     };
   }
 }

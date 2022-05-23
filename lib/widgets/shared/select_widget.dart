@@ -25,6 +25,9 @@ class SelectWidget<T> extends StatelessWidget {
         ),
         DropdownButton<T>(
           value: value,
+          focusNode: FocusNode(),
+          dropdownColor: Theme.of(context).canvasColor,
+          style: Theme.of(context).textTheme.bodyText2,
           items: items
               .map((e) => DropdownMenuItem(value: e, child: Text(e.toString())))
               .toList(),

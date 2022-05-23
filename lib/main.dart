@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nas_config/core/app_theme.dart';
 import 'package:nas_config/core/app_translation.dart';
 import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/core/app_bindings.dart';
@@ -24,18 +25,7 @@ class MyApp extends StatelessWidget {
       translationsKeys: AppTranslation.translationsKeys,
       title: 'app_title'.tr,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.dark,
-          colorSchemeSeed: colorSchemeSeed,
-          scaffoldBackgroundColor: bgColor,
-          appBarTheme:
-              AppBarTheme.of(context).copyWith(backgroundColor: bgColor),
-          cardTheme: CardTheme.of(context).copyWith(color: secondaryColor),
-          textTheme:
-              GoogleFonts.latoTextTheme(Theme.of(context).textTheme.copyWith(
-                    bodyText2: TextStyle(color: Color(0xFFadaeb5)),
-                  ))),
+      theme: AppTheme(context).current(),
       builder: (context, widget) => ResponsiveWrapper.builder(
         BouncingScrollWrapper.builder(context, widget!),
         minWidth: 350,

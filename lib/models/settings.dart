@@ -3,8 +3,8 @@ import 'package:nas_config/core/constants.dart';
 class Settings {
   int threads;
   int timeout;
-  final String login;
-  final String password;
+  String login;
+  String password;
 
   Settings(
       {required this.threads,

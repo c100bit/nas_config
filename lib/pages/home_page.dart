@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as get_x;
-import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/controllers/home_controller.dart';
 import 'package:nas_config/widgets/commands_widget.dart';
 import 'package:nas_config/widgets/controls_widget.dart';
