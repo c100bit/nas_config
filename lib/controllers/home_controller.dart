@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nas_config/models/app_model.dart';
-import 'package:nas_config/services/storage_repository.dart';
-import 'package:nas_config/widgets/shared/controls_dialog.dart';
+import 'package:nas_config/services/storage/storage_repository.dart';
+import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
 
 enum Status { stopped, started }
 
@@ -31,7 +31,7 @@ class HomeController extends GetxController {
   }
 
   void _startPerforming() {
-    print('startPerforming');
+    _senderRepository.execute(appModel);
     updateStatus(Status.started);
   }
 

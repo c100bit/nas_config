@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' as get_x;
 import 'package:nas_config/controllers/home_controller.dart';
 import 'package:nas_config/core/constants.dart';
-import 'package:nas_config/widgets/shared/controls_dialog.dart';
-import 'package:nas_config/widgets/shared/select_widget.dart';
-import 'package:nas_config/widgets/shared/wrap_widget.dart';
+import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
+import 'package:nas_config/ui/widgets/shared/select_widget.dart';
+import 'package:nas_config/ui/widgets/shared/wrap_widget.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class ControlsWidget extends get_x.GetView<HomeController> {

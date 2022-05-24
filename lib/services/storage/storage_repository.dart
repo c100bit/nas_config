@@ -1,5 +1,5 @@
 import 'package:nas_config/models/app_model.dart';
-import 'package:nas_config/services/storage_provider.dart';
+import 'package:nas_config/services/storage/storage_provider.dart';
 
 class StorageRepository {
   final StorageProvider _storage;

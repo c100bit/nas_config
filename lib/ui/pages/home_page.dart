@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as get_x;
 import 'package:nas_config/controllers/home_controller.dart';
-import 'package:nas_config/widgets/commands_widget.dart';
-import 'package:nas_config/widgets/controls_widget.dart';
-import 'package:nas_config/widgets/devices_widget.dart';
-import 'package:nas_config/widgets/logs_widget.dart';
-import 'package:nas_config/widgets/shared/info_dialog.dart';
+import 'package:nas_config/ui/widgets/commands_widget.dart';
+import 'package:nas_config/ui/widgets/controls_widget.dart';
+import 'package:nas_config/ui/widgets/devices_widget.dart';
+import 'package:nas_config/ui/widgets/logs_widget.dart';
+import 'package:nas_config/ui/widgets/shared/info_dialog.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class HomePage extends get_x.GetView<HomeController> {

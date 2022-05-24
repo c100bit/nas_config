@@ -40,6 +40,8 @@ dependencies:
   responsive_framework: ^0.2.0
   google_fonts: ^2.3.2
   desktop_window: ^0.4.0
+  computer: ^3.2.1
+  dartssh2: ^2.7.0
 
 dev_dependencies:
   flutter_test:
