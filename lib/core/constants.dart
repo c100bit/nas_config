@@ -24,3 +24,5 @@ const appModelKey = 'appModelKey';
 
 const appMinWSize = 280.0;
 const appMinHSize = 780.0;
+
+const appDebug = true;

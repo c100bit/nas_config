@@ -1,9 +1,12 @@
 import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/models/settings.dart';
 
+typedef Commnads = List<String>;
+typedef Devices = List<String>;
+
 class AppModel {
-  List<String> commands;
-  List<String> devices;
+  Commnads commands;
+  Devices devices;
   Settings settings;
 
   final timeoutValues = timeoutSelectValues;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nas_config/models/app_model.dart';
+import 'package:nas_config/services/sender/sender_provider.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
 import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
 
@@ -8,7 +9,10 @@ enum Status { stopped, started }
 
 class HomeController extends GetxController {
   final StorageRepository _storageRepository;
-  late final Rx<AppModel> appModel;
+  final SenderProvider _senderProvider;
+
+  late final Rx<AppModel> _appModel;
+  get appModel => _appModel.value;
 
   final settingsChangedInterval = const Duration(milliseconds: 1000);
 
@@ -16,13 +20,15 @@ class HomeController extends GetxController {
   get status => _status.value;
   updateStatus(Status val) => _status(val);
 
+  final _logData = ''.obs;
+
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
   final devicesController = TextEditingController();
   final commandsController = TextEditingController();
   final logsController = TextEditingController();
 
-  HomeController(this._storageRepository);
+  HomeController(this._storageRepository, this._senderProvider);
 
   void perform(ControlsDialog dialog) {
     status == Status.stopped
@@ -31,28 +37,32 @@ class HomeController extends GetxController {
   }
 
   void _startPerforming() {
-    _senderRepository.execute(appModel);
+    print('startPerforming');
+    _senderProvider.execute(appModel, _logData);
     updateStatus(Status.started);
   }
 
   void _stopPerforming() {
     print('stopPerforming');
+    _senderProvider.stop();
     updateStatus(Status.stopped);
   }
 
-  void updateTimeout(int? val) => appModel.update((model) =>
-      model?.settings.timeout = val ?? appModel.value.timeoutValues.first);
+  void updateTimeout(int? val) => _appModel.update((model) =>
+      model?.settings.timeout = val ?? _appModel.value.timeoutValues.first);
 
-  void updateThreads(int? val) => appModel.update((model) =>
-      model?.settings.threads = val ?? appModel.value.threadsValues.first);
+  void updateThreads(int? val) => _appModel.update((model) =>
+      model?.settings.threads = val ?? _appModel.value.threadsValues.first);
 
   @override
   void onInit() {
     final appDefault = AppModel.initDefault();
-    appModel = (_storageRepository.readAppModel() ?? appDefault).obs;
+    _appModel = (_storageRepository.readAppModel() ?? appDefault).obs;
+
+    ever(_logData, (String val) => logsController.text = val);
 
     debounce(
-        appModel, (AppModel model) => _storageRepository.writeAppModel(model),
+        _appModel, (AppModel model) => _storageRepository.writeAppModel(model),
         time: settingsChangedInterval);
 
     _initControllersValues();
@@ -62,23 +72,23 @@ class HomeController extends GetxController {
   }
 
   _initControllersValues() {
-    devicesController.text = appModel.value.devices.join('\n');
-    commandsController.text = appModel.value.commands.join('\n');
-    loginController.text = appModel.value.settings.login;
-    passwordController.text = appModel.value.settings.password;
+    devicesController.text = _appModel.value.devices.join('\n');
+    commandsController.text = _appModel.value.commands.join('\n');
+    loginController.text = _appModel.value.settings.login;
+    passwordController.text = _appModel.value.settings.password;
   }
 
   _initControllersListeners() {
-    devicesController.addListener(() => appModel.update(
+    devicesController.addListener(() => _appModel.update(
         (model) => model?.devices = _clearTextList(devicesController.text)));
 
-    commandsController.addListener(() => appModel.update(
+    commandsController.addListener(() => _appModel.update(
         (model) => model?.commands = _clearTextList(commandsController.text)));
 
-    loginController.addListener(() => appModel
+    loginController.addListener(() => _appModel
         .update((model) => model?.settings.login = loginController.text));
 
-    passwordController.addListener(() => appModel
+    passwordController.addListener(() => _appModel
         .update((model) => model?.settings.password = passwordController.text));
   }
 

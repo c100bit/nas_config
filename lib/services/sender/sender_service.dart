@@ -1,23 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:computer/computer.dart';
-import 'package:dartssh2/dartssh2.dart';
 import 'package:get/get.dart';
-import 'package:nas_config/services/sender/clients/app_ssh_client.dart';
+import 'package:nas_config/models/settings.dart';
+import 'package:nas_config/services/sender/clients/base_client.dart';
 
-class SSHService extends GetxService {
-  Future<SSHService> init() async {
-    return this;
+class SenderService extends GetxService {
+  BaseClient initClient(String ip, Settings settings) {
+    return AppSSHClient(
+        ip: ip,
+        login: settings.login,
+        password: settings.password,
+        timeout: settings.timeout);
   }
-}
-
-  Future<SSHClient> initClient(
-      {required ip, required login, required password}) async {
-      final client = AppSSHClient(ip: ip, login: login, password: password);
-      client.connect();
-
-  }
-
-
 }

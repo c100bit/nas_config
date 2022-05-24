@@ -35,13 +35,13 @@ class ControlsWidget extends get_x.GetView<HomeController> {
                     children: [
                       get_x.Obx(() => SelectWidget<int>(
                           title: 'timeout'.tr,
-                          value: controller.appModel().settings.timeout,
-                          items: controller.appModel().timeoutValues,
+                          value: controller.appModel.settings.timeout,
+                          items: controller.appModel.timeoutValues,
                           onChanged: (val) => controller.updateTimeout(val))),
                       get_x.Obx(() => SelectWidget<int>(
                           title: 'threads'.tr,
-                          value: controller.appModel().settings.threads,
-                          items: controller.appModel().threadsValues,
+                          value: controller.appModel.settings.threads,
+                          items: controller.appModel.threadsValues,
                           onChanged: (val) => controller.updateThreads(val))),
                     ],
                   ),

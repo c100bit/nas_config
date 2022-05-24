@@ -1,7 +1,4 @@
-import 'dart:convert';
-
-import 'package:dartssh2/dartssh2.dart';
-import 'package:nas_config/services/sender/clients/base_client.dart';
+part of 'base_client.dart';
 
 class AppSSHClient extends BaseClient {
   static const _port = 22;
@@ -11,25 +8,34 @@ class AppSSHClient extends BaseClient {
       {required super.ip,
       required super.login,
       required super.password,
+      required super.timeout,
       super.port = _port});
 
-  Future<void> _init() async {
+  @override
+  Future<void> _connect() async {
+    print('_connect');
     client = SSHClient(
-      await SSHSocket.connect(ip, port),
+      await SSHSocket.connect(
+        ip,
+        port,
+        timeout: Duration(seconds: timeout),
+      ),
       username: login,
       onPasswordRequest: () => password,
     );
   }
 
+  @override
   Future<String> _run(String command) async {
+    print('_run');
     final result = await client.run(command);
     return utf8.decode(result);
   }
 
-  Future<List<String>> execute(List<String> commands) async {
-    final result = super.execute(commands);
+  @override
+  Future<void> _close() async {
+    print('close');
     client.close();
     await client.done;
-    return result;
   }
 }
