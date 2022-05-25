@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' as get_x;
 import 'package:nas_config/controllers/home_controller.dart';
 import 'package:nas_config/core/constants.dart';
+import 'package:nas_config/models/settings.dart';
 import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
 import 'package:nas_config/ui/widgets/shared/select_widget.dart';
 import 'package:nas_config/ui/widgets/shared/wrap_widget.dart';
@@ -27,7 +28,6 @@ class ControlsWidget extends get_x.GetView<HomeController> {
             ]).value,
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(children: [
                 Expanded(
@@ -65,19 +65,58 @@ class ControlsWidget extends get_x.GetView<HomeController> {
                 ),
               ]),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    onPressed: () =>
-                        controller.perform(ControlsDialog(context)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(defaultPadding),
-                      child: get_x.Obx(() => Text(
-                            controller.status == Status.stopped
-                                ? 'start'.tr
-                                : 'stop'.tr,
-                          )),
-                    ),
+                  Expanded(
+                    child: get_x.Obx(() => Column(
+                          children: [
+                            RadioListTile<SettingsProtocol>(
+                                title: Text(
+                                  'ssh'.tr,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                                contentPadding: const EdgeInsets.all(0),
+                                value: SettingsProtocol.ssh,
+                                dense: true,
+                                visualDensity: const VisualDensity(
+                                    horizontal: -4, vertical: -2),
+                                activeColor: textColor,
+                                groupValue:
+                                    controller.appModel.settings.protocol,
+                                onChanged: (val) =>
+                                    controller.updateProtocol(val)),
+                            RadioListTile<SettingsProtocol>(
+                                title: Text(
+                                  'telnet'.tr,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                                dense: true,
+                                visualDensity: const VisualDensity(
+                                    horizontal: -4, vertical: -2),
+                                contentPadding: const EdgeInsets.all(0),
+                                activeColor: textColor,
+                                value: SettingsProtocol.telnet,
+                                groupValue:
+                                    controller.appModel.settings.protocol,
+                                onChanged: (val) =>
+                                    controller.updateProtocol(val)),
+                          ],
+                        )),
+                  ),
+                  Expanded(
+                    child: Column(children: [
+                      ElevatedButton(
+                        onPressed: () =>
+                            controller.perform(ControlsDialog(context)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: get_x.Obx(() => Text(
+                                controller.status == Status.stopped
+                                    ? 'start'.tr
+                                    : 'stop'.tr,
+                              )),
+                        ),
+                      )
+                    ]),
                   ),
                 ],
               ),

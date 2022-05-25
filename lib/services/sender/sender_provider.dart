@@ -17,7 +17,6 @@ class SenderProvider {
       final client = _senderService.initClient(ip, settings);
       _addCompute(client, appModel.commands);
     }
-
     _computeService.execute(settings.threads, logData);
   }
 

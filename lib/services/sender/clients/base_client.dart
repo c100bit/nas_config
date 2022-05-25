@@ -29,6 +29,7 @@ abstract class BaseClient {
       final result = await _run(command);
       totalResult.add(result);
     }
+
     await _close();
     return totalResult;
   }

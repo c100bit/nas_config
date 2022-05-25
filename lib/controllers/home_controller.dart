@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/models/log_data.dart';
+import 'package:nas_config/models/settings.dart';
 import 'package:nas_config/services/sender/sender_provider.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
 import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
@@ -13,7 +14,7 @@ class HomeController extends GetxController {
   final SenderProvider _senderProvider;
 
   late final Rx<AppModel> _appModel;
-  get appModel => _appModel.value;
+  AppModel get appModel => _appModel.value;
 
   final settingsChangedInterval = const Duration(milliseconds: 1000);
 
@@ -48,6 +49,9 @@ class HomeController extends GetxController {
     _senderProvider.stop();
     updateStatus(Status.stopped);
   }
+
+  void updateProtocol(SettingsProtocol? val) => _appModel.update(
+      (model) => model?.settings.protocol = val ?? SettingsProtocol.ssh);
 
   void updateTimeout(int? val) => _appModel.update((model) =>
       model?.settings.timeout = val ?? _appModel.value.timeoutValues.first);

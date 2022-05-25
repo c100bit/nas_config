@@ -31,6 +31,8 @@ final Map<String, String> enUS = {
   'start': 'START',
   'stop': 'STOP',
   'app_title': 'NAS CONFIG',
+  'ssh': 'SSH',
+  'telnet': 'Telnet',
 };
 
 final Map<String, String> ru = {};

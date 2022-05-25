@@ -42,6 +42,8 @@ dependencies:
   desktop_window: ^0.4.0
   computer: ^3.2.1
   dartssh2: ^2.7.0
+  dartz: ^0.10.1
+  telnet: ^1.0.7
 
 dev_dependencies:
   flutter_test:

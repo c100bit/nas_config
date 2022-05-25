@@ -14,6 +14,17 @@ class AppTheme {
         scaffoldBackgroundColor: bgColor,
         canvasColor: secondaryColor,
         focusColor: focusColor,
+        radioTheme: RadioTheme.of(_context).copyWith(
+          fillColor: MaterialStateProperty.all(textColor),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(mainBtnTextColor),
+            backgroundColor: MaterialStateProperty.all(mainBtnColor),
+            surfaceTintColor: MaterialStateProperty.all(secondaryColor),
+            overlayColor: MaterialStateProperty.all(mainBtnHoverColor),
+          ),
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: bgColor,
           scrolledUnderElevation: 0,
