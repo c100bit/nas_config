@@ -1,6 +1,7 @@
 import 'package:computer/computer.dart';
 import 'package:get/get.dart';
 import 'package:nas_config/core/constants.dart';
+import 'package:nas_config/models/log_data.dart';
 
 class ComputeService extends GetxService {
   final _pool = Computer.create();
@@ -11,12 +12,10 @@ class ComputeService extends GetxService {
     return this;
   }
 
-  Future<void> execute(int workersCount) async {
+  Future<void> execute(int workersCount, LogData logData) async {
     await _preparePool(workersCount);
 
-    for (var item in _items) {
-      _pool.compute(item);
-    }
+    _items.map((item) async => logData.put(await _pool.compute(item)));
   }
 
   Future<void> _preparePool(int workersCount) async {
@@ -36,6 +35,6 @@ class ComputeService extends GetxService {
     super.onClose();
   }
 
-  void add(item) => _items.add(item);
+  void add(item) => _items.add((item));
   void _clearItems() => _items.clear();
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nas_config/models/app_model.dart';
+import 'package:nas_config/models/log_data.dart';
 import 'package:nas_config/services/sender/sender_provider.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
 import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
@@ -20,7 +21,7 @@ class HomeController extends GetxController {
   get status => _status.value;
   updateStatus(Status val) => _status(val);
 
-  final _logData = ''.obs;
+  final _logData = LogData();
 
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
@@ -59,7 +60,7 @@ class HomeController extends GetxController {
     final appDefault = AppModel.initDefault();
     _appModel = (_storageRepository.readAppModel() ?? appDefault).obs;
 
-    ever(_logData, (String val) => logsController.text = val);
+    _logData.addListener((String val) => logsController.text = val);
 
     debounce(
         _appModel, (AppModel model) => _storageRepository.writeAppModel(model),
