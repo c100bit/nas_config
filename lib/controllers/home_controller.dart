@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/models/log_data.dart';
 import 'package:nas_config/models/settings.dart';
-import 'package:nas_config/services/sender/sender_provider.dart';
+import 'package:nas_config/services/sender/sender_service.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
 import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
 
@@ -11,7 +11,7 @@ enum Status { stopped, started }
 
 class HomeController extends GetxController {
   final StorageRepository _storageRepository;
-  final SenderProvider _senderProvider;
+  final SenderService _senderService;
 
   late final Rx<AppModel> _appModel;
   AppModel get appModel => _appModel.value;
@@ -30,7 +30,7 @@ class HomeController extends GetxController {
   final commandsController = TextEditingController();
   final logsController = TextEditingController();
 
-  HomeController(this._storageRepository, this._senderProvider);
+  HomeController(this._storageRepository, this._senderService);
 
   void perform(ControlsDialog dialog) {
     status == Status.stopped
@@ -40,13 +40,13 @@ class HomeController extends GetxController {
 
   void _startPerforming() {
     print('startPerforming');
-    _senderProvider.execute(appModel, _logData);
+    _senderService.run(appModel, _logData);
     updateStatus(Status.started);
   }
 
   void _stopPerforming() {
     print('stopPerforming');
-    _senderProvider.stop();
+    _senderService.stop();
     updateStatus(Status.stopped);
   }
 

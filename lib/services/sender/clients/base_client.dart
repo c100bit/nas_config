@@ -1,5 +1,9 @@
 import 'dart:convert';
 import 'package:dartssh2/dartssh2.dart';
+import 'package:nas_config/services/sender/clients/app_telnet_client/opt_msg_processor.dart';
+import 'package:telnet/telnet.dart';
+
+import 'app_telnet_client/text_msg_processor.dart';
 
 part 'app_ssh_client.dart';
 part 'app_telnet_client.dart';

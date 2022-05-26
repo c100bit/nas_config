@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:nas_config/controllers/home_controller.dart';
 import 'package:nas_config/services/sender/compute_service.dart';
-import 'package:nas_config/services/sender/sender_provider.dart';
 import 'package:nas_config/services/sender/sender_service.dart';
 import 'package:nas_config/services/storage/storage_provider.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
@@ -16,7 +15,7 @@ class AppBindings implements Bindings {
     Get.put(SenderService(), permanent: true);
 
     Get.put<HomeController>(
-        HomeController(StorageRepository(StorageProvider()), SenderProvider()),
+        HomeController(StorageRepository(StorageProvider()), SenderService()),
         permanent: true);
   }
 }
