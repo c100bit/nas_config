@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/models/log_data.dart';
 import 'package:nas_config/models/settings.dart';
+import 'package:nas_config/services/sender/clients/app_ssh_client.dart';
+import 'package:nas_config/services/sender/clients/app_telnet_client.dart';
 import 'package:nas_config/services/sender/clients/base_client.dart';
 import 'package:nas_config/services/sender/compute_service.dart';
 
@@ -22,8 +24,6 @@ class SenderService extends GetxService {
   void stop() => _computeService.stop();
 
   _addCompute(BaseClient client, Commnads commands) {
-    print(client);
-    print(commands);
     _computeService.add(() async {
       try {
         return (await client.execute(commands)).join('\n');

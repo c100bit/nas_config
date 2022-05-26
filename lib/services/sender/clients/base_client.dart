@@ -1,13 +1,3 @@
-import 'dart:convert';
-import 'package:dartssh2/dartssh2.dart';
-import 'package:nas_config/services/sender/clients/app_telnet_client/opt_msg_processor.dart';
-import 'package:telnet/telnet.dart';
-
-import 'app_telnet_client/text_msg_processor.dart';
-
-part 'app_ssh_client.dart';
-part 'app_telnet_client.dart';
-
 abstract class BaseClient {
   final String ip;
   final String login;
@@ -15,9 +5,9 @@ abstract class BaseClient {
   final int port;
   final int timeout;
 
-  Future<void> _connect();
-  Future<void> _close();
-  Future<String> _run(String command);
+  Future<void> connect();
+  Future<void> close();
+  Future<List<String>> run(List<String> commands);
 
   BaseClient(
       {required this.ip,
@@ -27,14 +17,9 @@ abstract class BaseClient {
       required this.port});
 
   Future<List<String>> execute(List<String> commands) async {
-    await _connect();
-    final totalResult = <String>[];
-    for (var command in commands) {
-      final result = await _run(command);
-      totalResult.add(result);
-    }
-
-    await _close();
-    return totalResult;
+    await connect();
+    final result = await run(commands);
+    await close();
+    return result;
   }
 }

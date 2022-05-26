@@ -4,6 +4,7 @@ import 'package:telnet/telnet.dart';
 class OptMsgProcessor extends TelnetProcessor {
   late final Map<TLOpt, List<TLMsg>> _willReplyMap;
   late final Map<TLOpt, List<TLMsg>> _doReplyMap;
+
   final _echoEnabled = true;
 
   OptMsgProcessor(super.client) {
@@ -50,33 +51,33 @@ class OptMsgProcessor extends TelnetProcessor {
   @override
   void run(TLMsg msg) {
     final cmd = (msg as TLOptMsg).cmd; // Telnet Negotiation Command.
-    final opt = (msg as TLOptMsg).opt; // Telnet Negotiation Option.
+    final opt = msg.opt; // Telnet Negotiation Option.
 
     if (cmd == TLCmd.wont) {
       // Write [IAC DO opt].
-      _client?.write(TLOptMsg(TLCmd.doNot, opt));
+      client.write(TLOptMsg(TLCmd.doNot, opt));
     } else if (cmd == TLCmd.doNot) {
       // Write [IAC WON'T opt].
-      _client?.write(TLOptMsg(TLCmd.wont, opt));
+      client.write(TLOptMsg(TLCmd.wont, opt));
     } else if (cmd == TLCmd.will) {
       if (_willReplyMap.containsKey(opt)) {
         // Reply the option.
         for (var msg in _willReplyMap[opt]!) {
-          _client?.write(msg);
+          client.write(msg);
         }
       } else {
         // Write [IAC DON'T opt].
-        _client?.write(TLOptMsg(TLCmd.doNot, opt));
+        client.write(TLOptMsg(TLCmd.doNot, opt));
       }
     } else if (cmd == TLCmd.doIt) {
       // Reply the option.
       if (_doReplyMap.containsKey(opt)) {
         for (var msg in _doReplyMap[opt]!) {
-          _client?.write(msg);
+          client.write(msg);
         }
       } else {
         // Write [IAC WON'T opt].
-        _client?.write(TLOptMsg(TLCmd.wont, opt));
+        client.write(TLOptMsg(TLCmd.wont, opt));
       }
     }
   }
