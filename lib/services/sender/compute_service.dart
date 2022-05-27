@@ -13,9 +13,8 @@ class ComputeService extends GetxService {
   }
 
   Future<void> execute(int workersCount, LogData logData) async {
-    //await _preparePool(workersCount);
-    // _items.forEach(_computeItem);
-    print(await _items.first());
+    await _preparePool(workersCount);
+    _items.forEach(_computeItem);
   }
 
   Future<void> _computeItem(Function item) async => await _pool.compute(item);

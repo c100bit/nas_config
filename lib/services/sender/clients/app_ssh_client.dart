@@ -12,6 +12,8 @@ class AppSSHClient extends BaseClient {
       required super.login,
       required super.password,
       required super.timeout,
+      required super.welcome,
+      required super.commands,
       super.port = _port});
 
   @override
@@ -28,7 +30,7 @@ class AppSSHClient extends BaseClient {
   }
 
   @override
-  Future<List<String>> run(List<String> commands) async {
+  Future<List<String>> run() async {
     final totalResult = <String>[];
     for (var command in commands) {
       final result = await _client.run(command);

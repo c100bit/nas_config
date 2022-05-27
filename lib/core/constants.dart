@@ -27,6 +27,7 @@ const threadsDefaultValue = 5;
 const protocolDefaultValue = SettingsProtocol.ssh;
 const loginDefaultValue = '';
 const passwordDefaultValue = '';
+const deviceDefaultValue = DeviceType.miktorik;
 
 const appModelKey = 'appModelKey';
 
@@ -34,3 +35,6 @@ const appMinWSize = 280.0;
 const appMinHSize = 780.0;
 
 const appDebug = true;
+
+const dlinkWelcome = '#';
+const mikrotikWelcome = '>';

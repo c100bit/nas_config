@@ -3,37 +3,51 @@ import 'package:telnet/telnet.dart';
 import 'dart:collection';
 
 class TextMsgProcessor extends TelnetProcessor {
-  final String login;
-  final String password;
-  final Queue<String> commands;
+  late final String login;
+  late final String password;
+  late final String welcome;
+  late final Queue<String> commands;
 
-  TextMsgProcessor(
-    super.client, {
-    required this.login,
-    required this.password,
-    required List<String> commands,
-  }) : commands = Queue.from(commands);
+  var _isLogged = false;
+
+  void addAccount({required String login, required String password}) {
+    this.login = login;
+    this.password = password;
+  }
+
+  void addCommands(List<String> commands) {
+    this.commands = Queue.from(commands);
+  }
+
+  void addWelcome(String welcome) => this.welcome = welcome;
 
   @override
   String run(TLMsg msg) {
-    final text = (msg as TLTextMsg).text.toLowerCase();
-
-    if (text.contains('#')) {
-      while (commands.isNotEmpty) {
-        final cmd = commands.removeFirst();
-        client.write(_buildCmd(cmd));
-      }
-    } else {
-      _authenticate(text);
+    final text = (msg as TLTextMsg).text;
+    if (!_isLogged) {
+      _isLogged = _authenticate(text.toLowerCase());
+    }
+    if (_isLogged && text.contains(welcome)) {
+      _runCmds();
     }
     return text;
   }
 
-  _authenticate(text) {
+  _authenticate(String text) {
     if (text.contains('login:') || text.contains('username:')) {
       client.write(TLTextMsg('$login\r\n'));
     } else if (text.contains('password:')) {
       client.write(TLTextMsg('$password\r\n'));
+    } else if (text.contains(welcome)) {
+      return true;
+    }
+    return false;
+  }
+
+  _runCmds() {
+    if (commands.isNotEmpty) {
+      final cmd = commands.removeFirst();
+      client.write(_buildCmd(cmd));
     }
   }
 

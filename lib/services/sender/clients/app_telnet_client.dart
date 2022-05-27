@@ -7,19 +7,28 @@ import 'package:telnet/telnet.dart';
 
 class AppTelnetClient extends BaseClient {
   static const _port = 23;
-  late final ITelnetClient? _client;
-  late final TextMsgProcessor _textMsgProcessor;
-  late final OptMsgProcessor _optMsgProcessor;
-  final _data = <String>[];
 
-  final _streamController = StreamController<String>();
+  late final ITelnetClient? _client;
+
+  final _textMsgProcessor = TextMsgProcessor();
+  final _optMsgProcessor = OptMsgProcessor();
+  final _dataController = StreamController<String>();
+
+  var isProccessedClient = false;
 
   AppTelnetClient(
       {required super.ip,
       required super.login,
       required super.password,
+      required super.welcome,
       required super.timeout,
-      super.port = _port});
+      required super.commands,
+      super.port = _port}) {
+    _textMsgProcessor
+      ..addCommands(commands)
+      ..addWelcome(welcome)
+      ..addAccount(login: login, password: password);
+  }
 
   @override
   Future<void> close() async {
@@ -43,30 +52,32 @@ class AppTelnetClient extends BaseClient {
     if (_client == null) {
       print("Fail to connect to ");
     } else {
-      print("Successfully connect");
+      print("Success to connect to ");
     }
   }
 
   @override
-  Future<List<String>> run(List<String> commands) async {
-    _initProcessors(commands);
-
-    return await _streamController.stream.toList();
-  }
-
-  _initProcessors(commands) {
-    _textMsgProcessor = TextMsgProcessor(_client!,
-        login: login, password: password, commands: commands);
-    _optMsgProcessor = OptMsgProcessor(_client!);
+  Future<List<String>> run() async {
+    _dataController.stream.listen((event) {
+      print(event);
+    });
+    return await Future.delayed(Duration(seconds: 5));
   }
 
   Future<void> _onEvent(TelnetClient? client, TLMsgEvent event) async {
-    if (_textMsgProcessor.commands.isEmpty) return _streamController.close();
+    if (client == null) return;
+
+    if (isProccessedClient) {
+      _textMsgProcessor.addClient(client);
+      _optMsgProcessor.addClient(client);
+    }
+
     if (event.type == TLMsgEventType.read) {
       if (event.msg is TLOptMsg) {
         _optMsgProcessor.run(event.msg);
       } else if (event.msg is TLTextMsg) {
-        _streamController.add(_textMsgProcessor.run(event.msg));
+        if (_textMsgProcessor.commands.isEmpty) return _dataController.close();
+        _dataController.add(_textMsgProcessor.run(event.msg));
       }
     }
   }

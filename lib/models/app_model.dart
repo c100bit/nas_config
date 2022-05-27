@@ -1,11 +1,11 @@
 import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/models/settings.dart';
 
-typedef Commnads = List<String>;
+typedef Commands = List<String>;
 typedef Devices = List<String>;
 
 class AppModel {
-  Commnads commands;
+  Commands commands;
   Devices devices;
   Settings settings;
 

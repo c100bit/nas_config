@@ -7,8 +7,42 @@ class OptMsgProcessor extends TelnetProcessor {
 
   final _echoEnabled = true;
 
-  OptMsgProcessor(super.client) {
+  OptMsgProcessor() {
     _initReplyMap();
+  }
+
+  @override
+  void run(TLMsg msg) {
+    final cmd = (msg as TLOptMsg).cmd; // Telnet Negotiation Command.
+    final opt = msg.opt; // Telnet Negotiation Option.
+
+    if (cmd == TLCmd.wont) {
+      // Write [IAC DO opt].
+      client.write(TLOptMsg(TLCmd.doNot, opt));
+    } else if (cmd == TLCmd.doNot) {
+      // Write [IAC WON'T opt].
+      client.write(TLOptMsg(TLCmd.wont, opt));
+    } else if (cmd == TLCmd.will) {
+      if (_willReplyMap.containsKey(opt)) {
+        // Reply the option.
+        for (var msg in _willReplyMap[opt]!) {
+          client.write(msg);
+        }
+      } else {
+        // Write [IAC DON'T opt].
+        client.write(TLOptMsg(TLCmd.doNot, opt));
+      }
+    } else if (cmd == TLCmd.doIt) {
+      // Reply the option.
+      if (_doReplyMap.containsKey(opt)) {
+        for (var msg in _doReplyMap[opt]!) {
+          client.write(msg);
+        }
+      } else {
+        // Write [IAC WON'T opt].
+        client.write(TLOptMsg(TLCmd.wont, opt));
+      }
+    }
   }
 
   void _initReplyMap() {
@@ -46,39 +80,5 @@ class OptMsgProcessor extends TelnetProcessor {
             [0x00, 0x5A, 0x00, 0x18]), // [IAC SB WINDOW_SIZE 90 24 IAC SE]
       ],
     };
-  }
-
-  @override
-  void run(TLMsg msg) {
-    final cmd = (msg as TLOptMsg).cmd; // Telnet Negotiation Command.
-    final opt = msg.opt; // Telnet Negotiation Option.
-
-    if (cmd == TLCmd.wont) {
-      // Write [IAC DO opt].
-      client.write(TLOptMsg(TLCmd.doNot, opt));
-    } else if (cmd == TLCmd.doNot) {
-      // Write [IAC WON'T opt].
-      client.write(TLOptMsg(TLCmd.wont, opt));
-    } else if (cmd == TLCmd.will) {
-      if (_willReplyMap.containsKey(opt)) {
-        // Reply the option.
-        for (var msg in _willReplyMap[opt]!) {
-          client.write(msg);
-        }
-      } else {
-        // Write [IAC DON'T opt].
-        client.write(TLOptMsg(TLCmd.doNot, opt));
-      }
-    } else if (cmd == TLCmd.doIt) {
-      // Reply the option.
-      if (_doReplyMap.containsKey(opt)) {
-        for (var msg in _doReplyMap[opt]!) {
-          client.write(msg);
-        }
-      } else {
-        // Write [IAC WON'T opt].
-        client.write(TLOptMsg(TLCmd.wont, opt));
-      }
-    }
   }
 }

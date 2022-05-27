@@ -13,23 +13,20 @@ class SenderService extends GetxService {
   void run(AppModel appModel, LogData logData) async {
     final settings = appModel.settings;
     final devices = _filterDevices(appModel.devices);
-    print(devices);
+
     for (var ip in devices) {
-      final client = _initClient(ip, settings);
-      _addCompute(client, appModel.commands);
+      final client = _initClient(ip, appModel.commands, settings);
+      _addCompute(client);
     }
+
     _computeService.execute(settings.threads, logData);
   }
 
   void stop() => _computeService.stop();
 
-  _addCompute(BaseClient client, Commnads commands) {
+  _addCompute(BaseClient client) {
     _computeService.add(() async {
-      try {
-        return (await client.execute(commands)).join('\n');
-      } catch (e) {
-        return e.toString();
-      }
+      print((await client.execute()).join('\n'));
     });
   }
 
@@ -39,19 +36,22 @@ class SenderService extends GetxService {
     return filtered;
   }
 
-  BaseClient _initClient(String ip, Settings settings) {
+  BaseClient _initClient(String ip, Commands commands, Settings settings) {
     if (settings.protocol == SettingsProtocol.telnet) {
       return AppTelnetClient(
           ip: ip,
           login: settings.login,
           password: settings.password,
-          timeout: settings.timeout);
+          welcome: settings.device.welcome,
+          timeout: settings.timeout,
+          commands: commands);
     }
-
     return AppSSHClient(
         ip: ip,
         login: settings.login,
         password: settings.password,
-        timeout: settings.timeout);
+        welcome: settings.device.welcome,
+        timeout: settings.timeout,
+        commands: commands);
   }
 }
