@@ -59,6 +59,9 @@ class HomeController extends GetxController {
   void updateThreads(int? val) => _appModel.update((model) =>
       model?.settings.threads = val ?? _appModel.value.threadsValues.first);
 
+  void updateDevice(DeviceType? val) => _appModel
+      .update((model) => model?.settings.device = val ?? DeviceType.miktorik);
+
   @override
   void onInit() {
     final appDefault = AppModel.initDefault();

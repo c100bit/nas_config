@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'app_title'.tr,
       debugShowCheckedModeBanner: false,
       theme: AppTheme(context).current(),
-      builder: (context, widget) => ResponsiveWrapper.builder(
+/*       builder: (context, widget) => ResponsiveWrapper.builder(
         BouncingScrollWrapper.builder(context, widget!),
         minWidth: 280,
         defaultScale: true,
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           ResponsiveBreakpoint.resize(980, name: TABLET),
           ResponsiveBreakpoint.autoScale(1400, name: DESKTOP),
         ],
-      ),
+      ), */
       home: const HomePage(),
     );
   }

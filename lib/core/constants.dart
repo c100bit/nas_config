@@ -38,3 +38,5 @@ const appDebug = true;
 
 const dlinkWelcome = '#';
 const mikrotikWelcome = '>';
+
+const mobileWidth = 720;

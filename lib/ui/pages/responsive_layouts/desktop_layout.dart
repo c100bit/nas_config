@@ -10,17 +10,23 @@ class DesktopLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        DevicesWidget(),
-        Column(
-          children: [
-            Row(
-              children: [
-                ControlsWidget(),
-                DevicesWidget(),
-              ],
-            ),
-            LogsWidget(),
-          ],
+        Expanded(flex: 1, child: DevicesWidget()),
+        Expanded(
+          flex: 4,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    Expanded(flex: 1, child: ControlsWidget()),
+                    Expanded(flex: 1, child: DevicesWidget()),
+                  ],
+                ),
+              ),
+              Expanded(flex: 2, child: LogsWidget()),
+            ],
+          ),
         )
       ],
     );

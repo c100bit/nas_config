@@ -11,10 +11,10 @@ class MobileLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: const [
-        DevicesWidget(),
-        ControlsWidget(),
-        CommandsWidget(),
-        LogsWidget()
+        Expanded(child: DevicesWidget()),
+        Expanded(child: ControlsWidget()),
+        Expanded(child: CommandsWidget()),
+        Expanded(child: LogsWidget())
       ],
     );
   }
