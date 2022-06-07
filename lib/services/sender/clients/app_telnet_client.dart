@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:nas_config/models/log_data.dart';
 import 'package:nas_config/services/sender/clients/app_telnet_client/opt_msg_processor.dart';
 import 'package:nas_config/services/sender/clients/app_telnet_client/text_msg_processor.dart';
 import 'package:nas_config/services/sender/clients/base_client.dart';
@@ -13,8 +14,6 @@ class AppTelnetClient extends BaseClient {
   final _textMsgProcessor = TextMsgProcessor();
   final _optMsgProcessor = OptMsgProcessor();
   final _dataController = StreamController<String>();
-
-  var isProccessedClient = false;
 
   AppTelnetClient(
       {required super.ip,
@@ -40,6 +39,7 @@ class AppTelnetClient extends BaseClient {
     final task = TelnetClient.startConnect(
       host: ip,
       port: port,
+      timeout: Duration(seconds: timeout),
       onEvent: _onEvent,
       onError: _onError,
       onDone: _onDone,
@@ -49,35 +49,46 @@ class AppTelnetClient extends BaseClient {
 
     _client = task.client;
     _client?.onEvent;
+
     if (_client == null) {
-      print("Fail to connect to ");
+      _dataController.add(Failure('Connection failure').message);
+      _dataController.close();
     } else {
-      print("Success to connect to ");
+      print('Successful connection to $ip');
     }
   }
 
   @override
   Future<List<String>> run() async {
-    _dataController.stream.listen((event) {
-      print(event);
+    Future.delayed(Duration(seconds: timeout), () {
+      _dataController
+          .add('[${_textMsgProcessor.currentDevice()}] Response timeout error');
+      close();
     });
-    return await Future.delayed(Duration(seconds: 5));
+    return await _dataController.stream.toList();
   }
 
   Future<void> _onEvent(TelnetClient? client, TLMsgEvent event) async {
     if (client == null) return;
 
-    if (isProccessedClient) {
-      _textMsgProcessor.addClient(client);
-      _optMsgProcessor.addClient(client);
-    }
+    _textMsgProcessor.updateClient(client);
+    _optMsgProcessor.updateClient(client);
 
     if (event.type == TLMsgEventType.read) {
       if (event.msg is TLOptMsg) {
         _optMsgProcessor.run(event.msg);
       } else if (event.msg is TLTextMsg) {
-        if (_textMsgProcessor.commands.isEmpty) return _dataController.close();
-        _dataController.add(_textMsgProcessor.run(event.msg));
+        if (_textMsgProcessor.commands.isEmpty) {
+          _dataController.add(
+              '[${_textMsgProcessor.currentDevice()}] Successful connection');
+          return _dataController.close();
+        }
+        final result = _textMsgProcessor.run(event.msg);
+
+        result.fold((failure) {
+          _dataController.add(failure.message);
+          _dataController.close();
+        }, (data) {});
       }
     }
   }
@@ -87,6 +98,6 @@ class AppTelnetClient extends BaseClient {
   }
 
   void _onDone(TelnetClient? client) {
-    print("[DONE]");
+    _dataController.close();
   }
 }

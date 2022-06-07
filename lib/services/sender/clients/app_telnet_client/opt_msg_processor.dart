@@ -5,7 +5,7 @@ class OptMsgProcessor extends TelnetProcessor {
   late final Map<TLOpt, List<TLMsg>> _willReplyMap;
   late final Map<TLOpt, List<TLMsg>> _doReplyMap;
 
-  final _echoEnabled = true;
+  final _echoEnabled = false;
 
   OptMsgProcessor() {
     _initReplyMap();

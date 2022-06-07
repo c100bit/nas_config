@@ -1,8 +1,8 @@
 import 'package:telnet/telnet.dart';
 
 abstract class TelnetProcessor {
-  late final TelnetClient client;
+  late TelnetClient client;
 
-  void addClient(TelnetClient client) => this.client = client;
+  void updateClient(TelnetClient client) => this.client = client;
   void run(TLMsg msg);
 }

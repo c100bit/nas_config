@@ -2,8 +2,6 @@ import 'package:get/get.dart';
 import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/models/log_data.dart';
 import 'package:nas_config/models/settings.dart';
-import 'package:nas_config/services/sender/clients/app_ssh_client.dart';
-import 'package:nas_config/services/sender/clients/app_telnet_client.dart';
 import 'package:nas_config/services/sender/clients/base_client.dart';
 import 'package:nas_config/services/sender/compute_service.dart';
 
@@ -37,21 +35,7 @@ class SenderService extends GetxService {
   }
 
   BaseClient _initClient(String ip, Commands commands, Settings settings) {
-    if (settings.protocol == SettingsProtocol.telnet) {
-      return AppTelnetClient(
-          ip: ip,
-          login: settings.login,
-          password: settings.password,
-          welcome: settings.device.welcome,
-          timeout: settings.timeout,
-          commands: commands);
-    }
-    return AppSSHClient(
-        ip: ip,
-        login: settings.login,
-        password: settings.password,
-        welcome: settings.device.welcome,
-        timeout: settings.timeout,
-        commands: commands);
+    return BaseClient.initClient(
+        settings: settings, ip: ip, commands: commands);
   }
 }

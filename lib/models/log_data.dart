@@ -12,3 +12,11 @@ class LogData {
 
   void addListener(Function(String) callback) => ever(_data, callback);
 }
+
+class Failure {
+  final String message;
+  Failure(this.message);
+
+  @override
+  String toString() => message;
+}

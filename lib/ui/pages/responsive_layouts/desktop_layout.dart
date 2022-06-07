@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:nas_config/core/constants.dart';
+import 'package:nas_config/ui/widgets/commands_widget.dart';
 import 'package:nas_config/ui/widgets/controls_widget.dart';
 import 'package:nas_config/ui/widgets/devices_widget.dart';
 import 'package:nas_config/ui/widgets/logs_widget.dart';
@@ -24,7 +25,7 @@ class DesktopLayout extends StatelessWidget {
                         flex: 1,
                         child: ControlsWidget(
                             margin: EdgeInsets.only(bottom: defaultMargin))),
-                    Expanded(flex: 1, child: DevicesWidget()),
+                    Expanded(flex: 1, child: CommandsWidget()),
                   ],
                 ),
               ),
