@@ -1,6 +1,12 @@
 import 'package:nas_config/core/constants.dart';
 
-enum SettingsProtocol { ssh, telnet }
+enum SettingsProtocol {
+  ssh,
+  telnet;
+
+  @override
+  String toString() => name;
+}
 
 enum DeviceType {
   miktorik(mikrotikWelcome),
@@ -8,6 +14,9 @@ enum DeviceType {
 
   final String welcome;
   const DeviceType(this.welcome);
+
+  @override
+  String toString() => name;
 }
 
 class Settings {

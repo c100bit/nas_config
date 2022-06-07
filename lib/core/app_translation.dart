@@ -33,6 +33,9 @@ final Map<String, String> enUS = {
   'app_title': 'NAS CONFIG',
   'ssh': 'SSH',
   'telnet': 'Telnet',
+  'device': 'Device:',
+  'miktorik': 'Mikrotik',
+  'dlink': 'Dlink',
 };
 
 final Map<String, String> ru = {};

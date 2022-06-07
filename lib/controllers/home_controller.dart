@@ -39,13 +39,11 @@ class HomeController extends GetxController {
   }
 
   void _startPerforming() {
-    print('startPerforming');
     _senderService.run(appModel, _logData);
     updateStatus(Status.started);
   }
 
   void _stopPerforming() {
-    print('stopPerforming');
     _senderService.stop();
     updateStatus(Status.stopped);
   }
@@ -59,8 +57,10 @@ class HomeController extends GetxController {
   void updateThreads(int? val) => _appModel.update((model) =>
       model?.settings.threads = val ?? _appModel.value.threadsValues.first);
 
-  void updateDevice(DeviceType? val) => _appModel
-      .update((model) => model?.settings.device = val ?? DeviceType.miktorik);
+  void updateDevice(DeviceType? val) => _appModel.update((model) =>
+      model?.settings.device = val ?? _appModel.value.deviceValues.first);
+
+  bool startedPerform() => status == Status.started;
 
   @override
   void onInit() {

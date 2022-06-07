@@ -31,12 +31,12 @@ const deviceDefaultValue = DeviceType.miktorik;
 
 const appModelKey = 'appModelKey';
 
-const appMinWSize = 280.0;
-const appMinHSize = 780.0;
+const appMinWSize = 500.0;
+const appMinHSize = 700.0;
 
 const appDebug = true;
 
 const dlinkWelcome = '#';
 const mikrotikWelcome = '>';
 
-const mobileWidth = 720;
+const mobileWidth = 870;

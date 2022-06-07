@@ -6,7 +6,6 @@ import 'package:nas_config/core/app_translation.dart';
 import 'package:nas_config/core/app_bindings.dart';
 import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/ui/pages/home_page.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:desktop_window/desktop_window.dart';
 
 void main() async {

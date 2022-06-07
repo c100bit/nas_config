@@ -11,6 +11,8 @@ class AppModel {
 
   final timeoutValues = timeoutSelectValues;
   final threadsValues = threadsSelectValues;
+  final deviceValues = DeviceType.values;
+  final protocolValues = SettingsProtocol.values;
 
   AppModel({
     required this.commands,

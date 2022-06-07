@@ -5,15 +5,19 @@ import 'package:nas_config/ui/widgets/shared/text_list_widget.dart';
 import 'package:nas_config/ui/widgets/shared/wrap_widget.dart';
 
 class DevicesWidget extends GetView<HomeController> {
-  const DevicesWidget({Key? key}) : super(key: key);
+  final EdgeInsets? margin;
+
+  const DevicesWidget({Key? key, this.margin}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WrapWidget(
-        child: TextListWidget(
-      controller: controller.devicesController,
-      title: 'devices_list_hint'.tr,
-      expands: true,
-    ));
+      margin: margin,
+      child: TextListWidget(
+        controller: controller.devicesController,
+        title: 'devices_list_hint'.tr,
+        expands: true,
+      ),
+    );
   }
 }

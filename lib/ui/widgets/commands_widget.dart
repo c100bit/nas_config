@@ -5,15 +5,18 @@ import 'package:nas_config/ui/widgets/shared/text_list_widget.dart';
 import 'package:nas_config/ui/widgets/shared/wrap_widget.dart';
 
 class CommandsWidget extends GetView<HomeController> {
-  const CommandsWidget({Key? key}) : super(key: key);
+  final EdgeInsets? margin;
+
+  const CommandsWidget({Key? key, this.margin}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WrapWidget(
-        child: TextListWidget(
-      controller: controller.commandsController,
-      title: 'commands_list_hint'.tr,
-      expands: true,
-    ));
+      margin: margin,
+      child: TextListWidget(
+          controller: controller.commandsController,
+          title: 'commands_list_hint'.tr,
+          expands: true),
+    );
   }
 }
