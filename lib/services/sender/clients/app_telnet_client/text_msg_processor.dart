@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:dartz/dartz.dart';
-import 'package:nas_config/models/log_data.dart';
+import 'package:nas_config/core/errors.dart';
+import 'package:nas_config/models/event.dart';
 import 'package:nas_config/services/sender/clients/app_telnet_client/telnet_processor.dart';
 import 'package:telnet/telnet.dart';
 
@@ -32,10 +33,10 @@ class TextMsgProcessor extends TelnetProcessor {
   @override
   Either<Failure, String> run(TLMsg msg) {
     final origText = (msg as TLTextMsg).text;
-    print(origText);
+
     final text = origText.toLowerCase();
     if (_firstResponse && !_isValidDevice(text)) {
-      return Left(Failure('Invalid device'));
+      return Left(Failure('', Errors.invalidDevice));
     }
     _firstResponse = false;
 
@@ -44,7 +45,7 @@ class TextMsgProcessor extends TelnetProcessor {
     }
     if (_currentAuth > maxAuthCount) {
       return Left(
-          Failure('[${currentDevice()}] Invalid auth for login=$login'));
+          Failure('', '[${currentDevice()}] Invalid auth for login=$login'));
     }
     if (_isLogged && _containsWelcome(text)) {
       _runCmds();

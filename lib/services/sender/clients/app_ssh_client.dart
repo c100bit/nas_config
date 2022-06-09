@@ -1,12 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:dartssh2/dartssh2.dart';
+import 'package:nas_config/core/errors.dart';
 import 'package:nas_config/services/sender/clients/base_client.dart';
 
 class AppSSHClient extends BaseClient {
   static const _port = 22;
   SSHClient? _client;
-  final _dataController = StreamController<String>();
 
   AppSSHClient(
       {required super.ip,
@@ -30,28 +31,28 @@ class AppSSHClient extends BaseClient {
         onPasswordRequest: () => password,
       );
     } on SocketException {
-      _dataController.add('Connection failure');
-      _dataController.close();
+      addError(Errors.connectionFailure);
     }
   }
 
   @override
-  Future<List<String>> run() async {
+  Future<void> run() async {
     if (_client != null) {
       try {
-        await _client?.run('quit');
-        _dataController.add('[Mikrotik] Successful connection');
-        _dataController.close();
+        for (var cmd in commands) {
+          final result = await _client!.run(cmd);
+          addEvent(
+              cmd: cmd, message: utf8.decode(result, allowMalformed: true));
+        }
+        closeLogData();
       } on SSHAuthFailError {
-        _dataController.add('[Mikrotik] Invalid auth for login=$login');
-        _dataController.close();
-      } on SSHAuthAbortError {
-        _dataController
-            .add('[Mikrotik] Connection closed before authentication');
-        _dataController.close();
+        addError(Errors.invalidAuth);
+      } on SSHError catch (e) {
+        addError(Errors.sshError(e));
+      } catch (e) {
+        addError(e.toString());
       }
     }
-    return await _dataController.stream.toList();
   }
 
   @override
@@ -59,6 +60,6 @@ class AppSSHClient extends BaseClient {
     try {
       _client?.close();
       await _client?.done;
-    } catch (e) {}
+    } catch (_) {}
   }
 }

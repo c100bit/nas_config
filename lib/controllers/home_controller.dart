@@ -22,7 +22,7 @@ class HomeController extends GetxController {
   get status => _status.value;
   updateStatus(Status val) => _status(val);
 
-  final _logData = LogData();
+  late LogData _logData;
 
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
@@ -39,6 +39,7 @@ class HomeController extends GetxController {
   }
 
   void _startPerforming() {
+    _logData.clear();
     _senderService.run(appModel, _logData);
     updateStatus(Status.started);
   }
@@ -67,7 +68,11 @@ class HomeController extends GetxController {
     final appDefault = AppModel.initDefault();
     _appModel = (_storageRepository.readAppModel() ?? appDefault).obs;
 
-    _logData.addListener((String val) => logsController.text = val);
+    _logData = LogData(doneCallback: () {
+      _senderService.stop();
+      updateStatus(Status.stopped);
+    });
+    _logData.addListener((String val) => {logsController.text = val});
 
     debounce(
         _appModel, (AppModel model) => _storageRepository.writeAppModel(model),

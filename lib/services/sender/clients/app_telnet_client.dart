@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:nas_config/models/log_data.dart';
+import 'package:nas_config/core/errors.dart';
 import 'package:nas_config/services/sender/clients/app_telnet_client/opt_msg_processor.dart';
 import 'package:nas_config/services/sender/clients/app_telnet_client/text_msg_processor.dart';
 import 'package:nas_config/services/sender/clients/base_client.dart';
@@ -51,10 +51,7 @@ class AppTelnetClient extends BaseClient {
     _client?.onEvent;
 
     if (_client == null) {
-      _dataController.add(Failure('Connection failure').message);
-      _dataController.close();
-    } else {
-      print('Successful connection to $ip');
+      addError(Errors.connectionFailure);
     }
   }
 

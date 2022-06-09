@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' as get_x;
+import 'package:get/get.dart';
 import 'package:nas_config/controllers/home_controller.dart';
 import 'package:nas_config/ui/widgets/shared/text_list_widget.dart';
 import 'package:nas_config/ui/widgets/shared/wrap_widget.dart';
 
-class LogsWidget extends get_x.GetView<HomeController> {
+class LogsWidget extends GetView<HomeController> {
   final EdgeInsets? margin;
 
   const LogsWidget({Key? key, this.margin}) : super(key: key);

@@ -1,23 +1,43 @@
 import 'package:computer/computer.dart';
+import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:nas_config/core/constants.dart';
+import 'package:nas_config/models/event.dart';
 import 'package:nas_config/models/log_data.dart';
+
+typedef EventList = List<Either<Failure, Event>>;
+typedef Formatter = List<String> Function(
+    List<Either<Failure, Event>> response);
 
 class ComputeService extends GetxService {
   final _pool = Computer.create();
   final _items = <Function>[];
+  var _performedCount = 0;
   int? _workersCount;
+  late LogData _output;
+  late Formatter _formatter;
 
   Future<ComputeService> init() async {
     return this;
   }
 
-  Future<void> execute(int workersCount, LogData logData) async {
+  Future<void> execute(
+      {required int workersCount,
+      required LogData output,
+      required Formatter formatter}) async {
+    _output = output;
+    _formatter = formatter;
     await _preparePool(workersCount);
     _items.forEach(_computeItem);
   }
 
-  Future<void> _computeItem(Function item) async => await _pool.compute(item);
+  Future<void> _computeItem(Function item) async {
+    final result = _formatter(await _pool.compute<Function, EventList>(item));
+    _output.put(result[0]);
+    _output.putToLog(result[1]);
+    _performedCount++;
+    if (isDone()) stop();
+  }
 
   Future<void> _preparePool(int workersCount) async {
     final createNewQueue = _workersCount != workersCount;
@@ -27,15 +47,13 @@ class ComputeService extends GetxService {
     }
   }
 
-  Future<void> stop() async => await _pool.turnOff();
+  bool isDone() => _performedCount >= _items.length;
 
-  @override
-  void onClose() {
-    _clearItems();
+  void stop() {
+    _items.clear();
+    _output.done();
     _pool.turnOff();
-    super.onClose();
   }
 
   void add(item) => _items.add((item));
-  void _clearItems() => _items.clear();
 }

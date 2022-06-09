@@ -40,3 +40,6 @@ const dlinkWelcome = '#';
 const mikrotikWelcome = '>';
 
 const mobileWidth = 870;
+
+const logFilePath = 'result.log';
+const logTimeFormat = 'yyyy-MM-dd H:mm:ss';

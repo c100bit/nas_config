@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:dartz/dartz.dart';
 import 'package:nas_config/models/app_model.dart';
+import 'package:nas_config/models/event.dart';
 import 'package:nas_config/models/settings.dart';
 import 'package:nas_config/services/sender/clients/app_ssh_client.dart';
 import 'package:nas_config/services/sender/clients/app_telnet_client.dart';
@@ -12,9 +16,12 @@ abstract class BaseClient {
   final String welcome;
   final Commands commands;
 
+  final _logData = StreamController<Either<Failure, Event>>();
+
   Future<void> connect();
   Future<void> close();
-  Future<List<String>> run();
+
+  Future<void> run();
 
   BaseClient(
       {required this.ip,
@@ -25,11 +32,24 @@ abstract class BaseClient {
       required this.commands,
       required this.port});
 
-  Future<List<String>> execute() async {
+  Future<List<Either<Failure, Event>>> execute() async {
     await connect();
-    final result = await run();
+    await run();
     await close();
-    return result;
+    return await _logData.stream.toList();
+  }
+
+  void addError(String message) {
+    _logData.add(Left(Failure(ip, message)));
+    _logData.close();
+  }
+
+  void addEvent({required String cmd, required String message}) {
+    _logData.add(Right(Event(ip, cmd, message)));
+  }
+
+  void closeLogData() {
+    if (!_logData.isClosed) _logData.close();
   }
 
   factory BaseClient.initClient(
