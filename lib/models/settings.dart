@@ -9,11 +9,31 @@ enum SettingsProtocol {
 }
 
 enum DeviceType {
-  miktorik(mikrotikWelcome),
-  dlink(dlinkWelcome);
+  miktorik(
+    mikrotikWelcome,
+    mikrotikCheckCmd,
+    mikrotikCheckStr,
+    mikrotikKeyWords,
+  ),
+
+  dlink(
+    dlinkWelcome,
+    dlinkCheckCmd,
+    dlinkCheckStr,
+    dlinkKeyWords,
+  );
 
   final String welcome;
-  const DeviceType(this.welcome);
+  final String checkCmd;
+  final String checkStr;
+  final List<String> keyWords;
+
+  const DeviceType(
+    this.welcome,
+    this.checkCmd,
+    this.checkStr,
+    this.keyWords,
+  );
 
   @override
   String toString() => name;

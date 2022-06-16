@@ -14,7 +14,7 @@ class AppSSHClient extends BaseClient {
       required super.login,
       required super.password,
       required super.timeout,
-      required super.welcome,
+      required super.device,
       required super.commands,
       super.port = _port});
 
@@ -39,20 +39,34 @@ class AppSSHClient extends BaseClient {
   Future<void> run() async {
     if (_client != null) {
       try {
+        final validDevice = await _checkDevice();
+        if (!validDevice) throw InvalidDeviceError();
         for (var cmd in commands) {
-          final result = await _client!.run(cmd);
-          addEvent(
-              cmd: cmd, message: utf8.decode(result, allowMalformed: true));
+          addEvent(cmd: cmd, message: await _runCmd(cmd));
         }
         closeLogData();
+      } on InvalidDeviceError catch (e) {
+        addError(e.toString());
       } on SSHAuthFailError {
         addError(Errors.invalidAuth);
+      } on TimeoutException {
+        addError(Errors.timeoutError);
       } on SSHError catch (e) {
-        addError(Errors.sshError(e));
+        addError(e.toString());
       } catch (e) {
         addError(e.toString());
       }
     }
+  }
+
+  Future<String> _runCmd(String cmd) async {
+    final result = await _client!.run(cmd).timeout(Duration(seconds: timeout));
+    return utf8.decode(result, allowMalformed: true);
+  }
+
+  Future<bool> _checkDevice() async {
+    final result = await _runCmd(device.checkCmd);
+    return result.toLowerCase().contains(device.checkStr.toLowerCase());
   }
 
   @override

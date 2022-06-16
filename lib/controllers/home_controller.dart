@@ -38,16 +38,8 @@ class HomeController extends GetxController {
         : dialog.stopDialog(_stopPerforming);
   }
 
-  void _startPerforming() {
-    _logData.clear();
-    _senderService.run(appModel, _logData);
-    updateStatus(Status.started);
-  }
-
-  void _stopPerforming() {
-    _senderService.stop();
-    updateStatus(Status.stopped);
-  }
+  void _startPerforming() => _senderService.start(appModel, _logData);
+  void _stopPerforming() => _senderService.stop();
 
   void updateProtocol(SettingsProtocol? val) => _appModel.update(
       (model) => model?.settings.protocol = val ?? SettingsProtocol.ssh);
@@ -68,10 +60,10 @@ class HomeController extends GetxController {
     final appDefault = AppModel.initDefault();
     _appModel = (_storageRepository.readAppModel() ?? appDefault).obs;
 
-    _logData = LogData(doneCallback: () {
-      _senderService.stop();
-      updateStatus(Status.stopped);
-    });
+    _logData = LogData(
+        doneCallback: () => updateStatus(Status.stopped),
+        startCallback: () => updateStatus(Status.started));
+
     _logData.addListener((String val) => {logsController.text = val});
 
     debounce(

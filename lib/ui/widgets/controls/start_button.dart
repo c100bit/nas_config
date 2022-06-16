@@ -14,8 +14,29 @@ class StartButton extends StatelessWidget {
       onPressed: () => controller.perform(ControlsDialog(context)),
       child: Padding(
         padding: const EdgeInsets.all(defaultPadding),
-        child: Obx(() => Text(
-              controller.startedPerform() ? 'stop'.tr : 'start'.tr,
+        child: Obx(() => SizedBox(
+              width: 80,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Visibility(
+                    visible: controller.startedPerform(),
+                    child: Row(
+                      children: const [
+                        SizedBox(
+                            height: 13,
+                            width: 13,
+                            child: CircularProgressIndicator(strokeWidth: 2)),
+                        SizedBox(width: 8),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    controller.startedPerform() ? 'stop'.tr : 'start'.tr,
+                  ),
+                ],
+              ),
             )),
       ),
     );

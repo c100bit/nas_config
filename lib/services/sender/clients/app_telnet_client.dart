@@ -19,13 +19,13 @@ class AppTelnetClient extends BaseClient {
       {required super.ip,
       required super.login,
       required super.password,
-      required super.welcome,
+      required super.device,
       required super.timeout,
       required super.commands,
       super.port = _port}) {
     _textMsgProcessor
       ..addCommands(commands)
-      ..addWelcome(welcome)
+      ..addDevice(device)
       ..addAccount(login: login, password: password);
   }
 
@@ -46,9 +46,7 @@ class AppTelnetClient extends BaseClient {
     );
     // Wait the connection task finished.
     await task.waitDone();
-
     _client = task.client;
-    _client?.onEvent;
 
     if (_client == null) {
       addError(Errors.connectionFailure);
@@ -57,36 +55,27 @@ class AppTelnetClient extends BaseClient {
 
   @override
   Future<List<String>> run() async {
-    Future.delayed(Duration(seconds: timeout), () {
-      _dataController
-          .add('[${_textMsgProcessor.currentDevice()}] Response timeout error');
-      close();
-    });
     return await _dataController.stream.toList();
   }
 
-  Future<void> _onEvent(TelnetClient? client, TLMsgEvent event) async {
-    if (client == null) return;
-
-    _textMsgProcessor.updateClient(client);
-    _optMsgProcessor.updateClient(client);
-
-    if (event.type == TLMsgEventType.read) {
+  FutureOr<void> _onEvent(TelnetClient? client, TLMsgEvent event) {
+    if (client == null || event.type != TLMsgEventType.read) return null;
+    try {
       if (event.msg is TLOptMsg) {
-        _optMsgProcessor.run(event.msg);
-      } else if (event.msg is TLTextMsg) {
-        if (_textMsgProcessor.commands.isEmpty) {
-          _dataController.add(
-              '[${_textMsgProcessor.currentDevice()}] Successful connection');
-          return _dataController.close();
-        }
-        final result = _textMsgProcessor.run(event.msg);
-
-        result.fold((failure) {
-          _dataController.add(failure.message);
-          _dataController.close();
-        }, (data) {});
+        _optMsgProcessor
+          ..updateClient(client)
+          ..run(event.msg);
+        return null;
       }
+      if (event.msg is! TLTextMsg) return null;
+      if (_textMsgProcessor.isEmptyCmdList()) {
+        closeLogData();
+      }
+      final cmd = _textMsgProcessor.nextCommand();
+      final result = (_textMsgProcessor..updateClient(client)).run(event.msg);
+      addEvent(cmd: cmd, message: result);
+    } catch (e) {
+      addError(e.toString());
     }
   }
 
@@ -95,6 +84,6 @@ class AppTelnetClient extends BaseClient {
   }
 
   void _onDone(TelnetClient? client) {
-    _dataController.close();
+    // _dataController.close();
   }
 }

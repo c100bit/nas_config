@@ -13,7 +13,7 @@ abstract class BaseClient {
   final String password;
   final int port;
   final int timeout;
-  final String welcome;
+  final DeviceType device;
   final Commands commands;
 
   final _logData = StreamController<Either<Failure, Event>>();
@@ -28,7 +28,7 @@ abstract class BaseClient {
       required this.login,
       required this.password,
       required this.timeout,
-      required this.welcome,
+      required this.device,
       required this.commands,
       required this.port});
 
@@ -59,7 +59,7 @@ abstract class BaseClient {
     final params = {
       #ip: ip,
       #login: settings.login,
-      #welcome: settings.device.welcome,
+      #device: settings.device,
       #commands: commands,
       #password: settings.password,
       #timeout: settings.timeout

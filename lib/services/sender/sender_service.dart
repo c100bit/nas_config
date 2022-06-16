@@ -15,7 +15,7 @@ class SenderService extends GetxService {
   final ComputeService _computeService = Get.find<ComputeService>();
   late Settings _settings;
 
-  void run(AppModel appModel, LogData logData) async {
+  void start(AppModel appModel, LogData logData) async {
     _settings = appModel.settings;
     final devices = _filterDevices(appModel.devices);
 
@@ -26,11 +26,11 @@ class SenderService extends GetxService {
 
     _computeService.execute(
         workersCount: _settings.threads,
-        output: logData,
+        output: logData..start(),
         formatter: _formatResponse);
   }
 
-  void stop() => _computeService.stop();
+  void stop() => _computeService.stop(byUser: true);
 
   _addCompute(BaseClient client) {
     _computeService.add(() async {
@@ -56,6 +56,9 @@ class SenderService extends GetxService {
         fullData.add(_buildFormattedCmd(e, cut: false));
       });
     }
+    data.add(_buildFormattedEnd());
+    fullData.add(_buildFormattedEnd());
+
     return [data.join(), fullData.join()];
   }
 
@@ -65,12 +68,14 @@ class SenderService extends GetxService {
     return '[$ip][${device.toString().tr}][$time]\n';
   }
 
+  String _buildFormattedEnd() => '\n';
+
   String _buildFormattedCmd(Event e, {bool cut = true}) {
     final msg = cut ? e.message.cutByLength(length: 500) : e.message;
-    return '[Command] ${e.cmd}\n[Result] $msg\n';
+    return '[Command] ${e.cmd}\n[Result] ${msg.trim()}\n';
   }
 
-  String _buildFormattedError(Failure f) => 'Failure: ${f.message}';
+  String _buildFormattedError(Failure f) => 'Failure: ${f.message}\n';
 
   Devices _filterDevices(Devices devices) {
     final filtered = devices.toSet().map((e) => e.trim()).toList();

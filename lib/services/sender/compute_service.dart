@@ -12,8 +12,9 @@ typedef Formatter = List<String> Function(
 class ComputeService extends GetxService {
   final _pool = Computer.create();
   final _items = <Function>[];
+
   var _performedCount = 0;
-  int? _workersCount;
+
   late LogData _output;
   late Formatter _formatter;
 
@@ -32,26 +33,28 @@ class ComputeService extends GetxService {
   }
 
   Future<void> _computeItem(Function item) async {
-    final result = _formatter(await _pool.compute<Function, EventList>(item));
-    _output.put(result[0]);
-    _output.putToLog(result[1]);
-    _performedCount++;
-    if (isDone()) stop();
-  }
-
-  Future<void> _preparePool(int workersCount) async {
-    final createNewQueue = _workersCount != workersCount;
-    if (createNewQueue || !_pool.isRunning) {
-      await _pool.turnOn(workersCount: workersCount, verbose: appDebug);
-      _workersCount = workersCount;
+    try {
+      final result = _formatter(await _pool.compute<Function, EventList>(item));
+      _output.put(result[0]);
+      _output.putToLog(result[1]);
+      _performedCount++;
+      if (isDone()) stop();
+    } catch (e) {
+      print(e);
     }
   }
 
-  bool isDone() => _performedCount >= _items.length;
+  Future<void> _preparePool(int workersCount) async {
+    await _pool.turnOn(workersCount: workersCount, verbose: appDebug);
+  }
 
-  void stop() {
+  bool isDone() => _performedCount >= _items.length;
+  void _resetPerformedCount() => _performedCount = 0;
+
+  void stop({byUser = false}) {
+    _resetPerformedCount();
     _items.clear();
-    _output.done();
+    _output.done(byUser: byUser);
     _pool.turnOff();
   }
 

@@ -1,8 +1,23 @@
-import 'package:dartssh2/dartssh2.dart';
-
 class Errors {
   static const connectionFailure = 'Connection Failure';
-  static const invalidAuth = 'Invalid auth';
-  static const invalidDevice = 'Invalid device';
-  static sshError(SSHError error) => 'SSHError - $error';
+  static const invalidAuth = 'Invalid Auth';
+  static const invalidDevice = 'Invalid Device';
+  static const timeoutError = 'Timeout Error';
+}
+
+abstract class AppError {
+  String get message;
+
+  @override
+  String toString() => message;
+}
+
+class InvalidDeviceError extends AppError {
+  @override
+  String get message => Errors.invalidDevice;
+}
+
+class InvalidAuthError extends AppError {
+  @override
+  String get message => Errors.invalidAuth;
 }

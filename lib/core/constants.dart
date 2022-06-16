@@ -37,7 +37,14 @@ const appMinHSize = 700.0;
 const appDebug = true;
 
 const dlinkWelcome = '#';
+const dlinkCheckCmd = 'show switch';
+const dlinkCheckStr = 'Device Type';
+const dlinkKeyWords = ['dlink, d-link'];
+
 const mikrotikWelcome = '>';
+const mikrotikCheckCmd = '/system resource print';
+const mikrotikCheckStr = 'mikrotik';
+const mikrotikKeyWords = ['mikrotik'];
 
 const mobileWidth = 870;
 

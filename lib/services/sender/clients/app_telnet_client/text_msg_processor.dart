@@ -1,57 +1,53 @@
 import 'dart:collection';
-import 'package:dartz/dartz.dart';
 import 'package:nas_config/core/errors.dart';
-import 'package:nas_config/models/event.dart';
+import 'package:nas_config/models/settings.dart';
 import 'package:nas_config/services/sender/clients/app_telnet_client/telnet_processor.dart';
 import 'package:telnet/telnet.dart';
 
 class TextMsgProcessor extends TelnetProcessor {
-  late final String login;
-  late final String password;
-  late final String welcome;
-  late final Queue<String> commands;
+  late final String _login;
+  late final String _password;
+  late final DeviceType _device;
+  late final Queue<String> _commands;
 
-  final maxAuthCount = 1;
+  final _maxAuthCount = 1;
 
   var _isLogged = false;
   var _currentAuth = 0;
   var _firstResponse = true;
 
-  String _currentDevice = '';
-
   void addAccount({required String login, required String password}) {
-    this.login = login;
-    this.password = password;
+    _login = login;
+    _password = password;
   }
 
-  void addCommands(List<String> commands) {
-    this.commands = Queue.from(commands);
-  }
+  void addCommands(List<String> commands) => _commands = Queue.from(commands);
 
-  void addWelcome(String welcome) => this.welcome = welcome;
+  void addDevice(DeviceType device) => _device = device;
 
   @override
-  Either<Failure, String> run(TLMsg msg) {
+  String run(TLMsg msg) {
     final origText = (msg as TLTextMsg).text;
-
     final text = origText.toLowerCase();
-    if (_firstResponse && !_isValidDevice(text)) {
-      return Left(Failure('', Errors.invalidDevice));
+
+    if (_firstResponse) {
+      if (!_isValidDevice(text)) throw InvalidDeviceError();
+      _firstResponse = false;
     }
-    _firstResponse = false;
 
     if (!_isLogged) {
       _isLogged = _authenticate(text);
     }
-    if (_currentAuth > maxAuthCount) {
-      return Left(
-          Failure('', '[${currentDevice()}] Invalid auth for login=$login'));
+    if (_currentAuth > _maxAuthCount) {
+      throw InvalidAuthError();
     }
     if (_isLogged && _containsWelcome(text)) {
-      _runCmds();
+      _executeNextCmd();
     }
-    return Right(text);
+    return origText;
   }
+
+  bool isEmptyCmdList() => _commands.isEmpty;
 
   _authenticate(String text) {
     if (text.contains('login:') || text.contains('username:')) {
@@ -66,49 +62,31 @@ class TextMsgProcessor extends TelnetProcessor {
   }
 
   bool _containsWelcome(String text) {
-    return text.contains(welcome);
+    return text.contains(_device.welcome);
   }
 
   bool _isValidDevice(String text) {
-    final deviceKeywords = ['dlink', 'd-link', 'mikrotik'];
     try {
-      _currentDevice = deviceKeywords.firstWhere((i) => text.contains(i));
+      _device.keyWords.firstWhere((i) => text.contains(i));
       return true;
     } on StateError {
       return false;
     }
   }
 
-  _runCmds() {
-    if (commands.isNotEmpty) {
-      if (_currentDevice == 'mikrotik') {
-        commands.removeFirst();
-      } else {
-        commands.removeLast();
-      }
-
-      final cmd = commands.removeFirst();
+  _executeNextCmd() {
+    if (_commands.isNotEmpty) {
+      final cmd = _commands.removeFirst();
       _writeCmd(cmd);
     }
   }
+
+  String nextCommand() => _commands.first;
 
   _writeCmd(String cmd) {
     client.write(TLTextMsg('$cmd\r\n'));
   }
 
-  _writeLogin() => _writeCmd(login);
-  _writePass() => _writeCmd(password);
-
-  String currentDevice() {
-    switch (_currentDevice) {
-      case 'mikrotik':
-        return 'Mikrotik';
-      case 'dlink':
-        return 'Dlink';
-      case 'd-link':
-        return 'Dlink';
-      default:
-        return 'Unknown';
-    }
-  }
+  _writeLogin() => _writeCmd(_login);
+  _writePass() => _writeCmd(_password);
 }
