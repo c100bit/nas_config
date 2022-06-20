@@ -13,7 +13,7 @@ class AppTelnetClient extends BaseClient {
 
   final _textMsgProcessor = TextMsgProcessor();
   final _optMsgProcessor = OptMsgProcessor();
-  final _dataController = StreamController<String>();
+  final _runCompleter = Completer();
 
   AppTelnetClient(
       {required super.ip,
@@ -49,13 +49,14 @@ class AppTelnetClient extends BaseClient {
     _client = task.client;
 
     if (_client == null) {
+      _completeRun();
       addError(Errors.connectionFailure);
     }
   }
 
   @override
-  Future<List<String>> run() async {
-    return await _dataController.stream.toList();
+  Future<void> run() {
+    return _runCompleter.future;
   }
 
   FutureOr<void> _onEvent(TelnetClient? client, TLMsgEvent event) {
@@ -68,13 +69,21 @@ class AppTelnetClient extends BaseClient {
         return null;
       }
       if (event.msg is! TLTextMsg) return null;
-      if (_textMsgProcessor.isEmptyCmdList()) {
-        closeLogData();
-      }
+
       final cmd = _textMsgProcessor.nextCommand();
       final result = (_textMsgProcessor..updateClient(client)).run(event.msg);
-      addEvent(cmd: cmd, message: result);
+
+      if (_textMsgProcessor.isAuth()) {
+        addEvent(cmd: cmd, message: result);
+
+        if (_textMsgProcessor.isEmptyCmdList()) {
+          _completeRun();
+          closeLogData();
+          return null;
+        }
+      }
     } catch (e) {
+      _completeRun();
       addError(e.toString());
     }
   }
@@ -83,7 +92,8 @@ class AppTelnetClient extends BaseClient {
     print("[ERROR] $error");
   }
 
-  void _onDone(TelnetClient? client) {
-    // _dataController.close();
-  }
+  void _onDone(TelnetClient? client) {}
+
+  void _completeRun() =>
+      _runCompleter.isCompleted ? null : _runCompleter.complete();
 }

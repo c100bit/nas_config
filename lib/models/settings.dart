@@ -13,26 +13,26 @@ enum DeviceType {
     mikrotikWelcome,
     mikrotikCheckCmd,
     mikrotikCheckStr,
-    mikrotikKeyWords,
+    mikrotikKeywords,
   ),
 
   dlink(
     dlinkWelcome,
     dlinkCheckCmd,
     dlinkCheckStr,
-    dlinkKeyWords,
+    dlinkKeywords,
   );
 
   final String welcome;
   final String checkCmd;
   final String checkStr;
-  final List<String> keyWords;
+  final List<String> keywords;
 
   const DeviceType(
     this.welcome,
     this.checkCmd,
     this.checkStr,
-    this.keyWords,
+    this.keywords,
   );
 
   @override

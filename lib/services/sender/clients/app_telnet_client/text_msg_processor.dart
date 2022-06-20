@@ -43,11 +43,14 @@ class TextMsgProcessor extends TelnetProcessor {
     }
     if (_isLogged && _containsWelcome(text)) {
       _executeNextCmd();
+      print('TExt $origText');
     }
     return origText;
   }
 
   bool isEmptyCmdList() => _commands.isEmpty;
+
+  bool isAuth() => _isLogged;
 
   _authenticate(String text) {
     if (text.contains('login:') || text.contains('username:')) {
@@ -67,7 +70,7 @@ class TextMsgProcessor extends TelnetProcessor {
 
   bool _isValidDevice(String text) {
     try {
-      _device.keyWords.firstWhere((i) => text.contains(i));
+      _device.keywords.firstWhere((i) => text.contains(i));
       return true;
     } on StateError {
       return false;
@@ -81,7 +84,13 @@ class TextMsgProcessor extends TelnetProcessor {
     }
   }
 
-  String nextCommand() => _commands.first;
+  String lastExecutedCommand() {
+    try {
+      return _commands.first;
+    } on StateError {
+      return '';
+    }
+  }
 
   _writeCmd(String cmd) {
     client.write(TLTextMsg('$cmd\r\n'));
