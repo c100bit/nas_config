@@ -36,6 +36,7 @@ final Map<String, String> enUS = {
   'device': 'Device:',
   'miktorik': 'Mikrotik',
   'dlink': 'Dlink',
+  'open_logs': 'Open file'
 };
 
 final Map<String, String> ru = {};

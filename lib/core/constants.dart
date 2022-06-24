@@ -46,7 +46,7 @@ const mikrotikCheckCmd = '/system resource print';
 const mikrotikCheckStr = 'mikrotik';
 const mikrotikKeywords = ['mikrotik'];
 
-const mobileWidth = 870;
+const mobileWidth = 700;
 
-const logFilePath = 'result.log';
+const logFile = 'result.log';
 const logTimeFormat = 'yyyy-MM-dd H:mm:ss';

@@ -10,11 +10,14 @@ class TextMsgProcessor extends TelnetProcessor {
   late final DeviceType _device;
   late final Queue<String> _commands;
 
-  final _maxAuthCount = 1;
+  final _executedCommands = <String>[];
+
+  final _maxAuthCount = 2;
 
   var _isLogged = false;
   var _currentAuth = 0;
   var _firstResponse = true;
+  var _lastResult = false;
 
   void addAccount({required String login, required String password}) {
     _login = login;
@@ -29,7 +32,7 @@ class TextMsgProcessor extends TelnetProcessor {
   String run(TLMsg msg) {
     final origText = (msg as TLTextMsg).text;
     final text = origText.toLowerCase();
-
+    print(text);
     if (_firstResponse) {
       if (!_isValidDevice(text)) throw InvalidDeviceError();
       _firstResponse = false;
@@ -43,14 +46,18 @@ class TextMsgProcessor extends TelnetProcessor {
     }
     if (_isLogged && _containsWelcome(text)) {
       _executeNextCmd();
-      print('TExt $origText');
+      print('CMD ${lastExecutedCommand()}');
+      print('Result - $origText');
     }
-    return origText;
+    return _formatText(origText);
   }
 
   bool isEmptyCmdList() => _commands.isEmpty;
 
   bool isAuth() => _isLogged;
+
+  bool isFirstResult() => _executedCommands.length <= 1;
+  bool isLastResult() => _lastResult;
 
   _authenticate(String text) {
     if (text.contains('login:') || text.contains('username:')) {
@@ -68,6 +75,11 @@ class TextMsgProcessor extends TelnetProcessor {
     return text.contains(_device.welcome);
   }
 
+  String _formatText(String text) {
+    final arr = text.split('\n');
+    return arr.getRange(1, arr.length).join('\n');
+  }
+
   bool _isValidDevice(String text) {
     try {
       _device.keywords.firstWhere((i) => text.contains(i));
@@ -80,13 +92,16 @@ class TextMsgProcessor extends TelnetProcessor {
   _executeNextCmd() {
     if (_commands.isNotEmpty) {
       final cmd = _commands.removeFirst();
+      _executedCommands.add(cmd);
       _writeCmd(cmd);
+    } else {
+      _lastResult = true;
     }
   }
 
   String lastExecutedCommand() {
     try {
-      return _commands.first;
+      return _executedCommands.last;
     } on StateError {
       return '';
     }

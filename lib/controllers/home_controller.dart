@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/models/log_data.dart';
 import 'package:nas_config/models/settings.dart';
 import 'package:nas_config/services/sender/sender_service.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
 import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum Status { stopped, started }
 
@@ -17,6 +19,9 @@ class HomeController extends GetxController {
   AppModel get appModel => _appModel.value;
 
   final settingsChangedInterval = const Duration(milliseconds: 1000);
+
+  final _logBtnActive = false.obs;
+  get logBtnActive => _logBtnActive.value;
 
   final _status = Status.stopped.obs;
   get status => _status.value;
@@ -52,6 +57,14 @@ class HomeController extends GetxController {
 
   void updateDevice(DeviceType? val) => _appModel.update((model) =>
       model?.settings.device = val ?? _appModel.value.deviceValues.first);
+
+  void showLogBtn() => _logBtnActive.value = true;
+  void hideLogBtn() => _logBtnActive.value = false;
+
+  Future<void> openLogsFile() async {
+    final url = Uri.parse('file:${LogData.logFilePath}');
+    if (!await launchUrl(url)) throw 'Could not launch $url';
+  }
 
   bool startedPerform() => status == Status.started;
 

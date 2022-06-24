@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nas_config/core/constants.dart';
+import 'package:path/path.dart' as path;
 
 class LogData {
   final RxString _data;
   final Function doneCallback;
   final Function startCallback;
-
+  static String logFilePath = path.join(Directory.current.path, logFile);
   IOSink? _logFile;
 
   LogData(

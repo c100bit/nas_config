@@ -70,13 +70,13 @@ class AppTelnetClient extends BaseClient {
       }
       if (event.msg is! TLTextMsg) return null;
 
-      final cmd = _textMsgProcessor.nextCommand();
+      final cmd = _textMsgProcessor.lastExecutedCommand();
       final result = (_textMsgProcessor..updateClient(client)).run(event.msg);
 
-      if (_textMsgProcessor.isAuth()) {
-        addEvent(cmd: cmd, message: result);
+      if (_textMsgProcessor.isAuth() && !_textMsgProcessor.isFirstResult()) {
+        if (result.isNotEmpty) addEvent(cmd: cmd, message: result);
 
-        if (_textMsgProcessor.isEmptyCmdList()) {
+        if (_textMsgProcessor.isLastResult()) {
           _completeRun();
           closeLogData();
           return null;
@@ -92,7 +92,9 @@ class AppTelnetClient extends BaseClient {
     print("[ERROR] $error");
   }
 
-  void _onDone(TelnetClient? client) {}
+  void _onDone(TelnetClient? client) {
+    print('done');
+  }
 
   void _completeRun() =>
       _runCompleter.isCompleted ? null : _runCompleter.complete();

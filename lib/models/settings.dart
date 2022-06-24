@@ -67,8 +67,9 @@ class Settings {
     return Settings(
       threads: json['threads'] as int,
       timeout: json['timeout'] as int,
-      protocol: SettingsProtocol.values.byName(json['protocol']),
-      device: DeviceType.values.byName(json['device']),
+      protocol:
+          protocolDefaultValue, // SettingsProtocol.values.byName(json['protocol']),
+      device: deviceDefaultValue, // DeviceType.values.byName(json['device']),
       login: json['login'],
       password: json['password'],
     );
