@@ -1,16 +1,14 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nas_config/core/constants.dart';
-import 'package:path/path.dart' as path;
+import 'package:nas_config/services/logs_service.dart';
 
 class LogData {
   final RxString _data;
   final Function doneCallback;
   final Function startCallback;
-  static String logFilePath = path.join(Directory.current.path, logFile);
-  IOSink? _logFile;
+
+  final LogsService _logsService = Get.find<LogsService>();
 
   LogData(
       {String initStr = '',
@@ -19,23 +17,22 @@ class LogData {
       : _data = initStr.obs;
 
   void put(String value) => _data.value += value;
-  void putToLog(String value) => _logFile?.write(value);
+  void putToLog(String value) => _logsService.write(value);
 
   String get data => _data.value;
 
   void _clear() => _data.value = '';
 
   void start() {
-    _logFile = File(logFilePath).openWrite(mode: FileMode.append);
+    _logsService.open();
     _clear();
-    _logFile?.write(_buildLogHeader());
+    _logsService.write(_buildLogHeader());
     startCallback();
   }
 
   Future<void> done({byUser = false}) async {
-    if (byUser) _logFile?.write(_buildCancel());
-    await _logFile?.flush();
-    await _logFile?.close();
+    if (byUser) _logsService.write(_buildCancel());
+    await _logsService.close();
     doneCallback();
   }
 

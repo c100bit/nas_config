@@ -48,5 +48,5 @@ const mikrotikKeywords = ['mikrotik'];
 
 const mobileWidth = 700;
 
-const logFile = 'result.log';
+const logFileName = 'result.log';
 const logTimeFormat = 'yyyy-MM-dd H:mm:ss';

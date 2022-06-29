@@ -6,10 +6,13 @@ import 'package:nas_config/services/storage/storage_provider.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
 import 'package:nas_config/services/storage/storage_service.dart';
 
+import '../services/logs_service.dart';
+
 class AppBindings implements Bindings {
   @override
   Future<void> dependencies() async {
     await Get.putAsync<StorageService>(StorageService.init, permanent: true);
+    await Get.putAsync<LogsService>(LogsService.init, permanent: true);
 
     Get.put(ComputeService(), permanent: true);
     Get.put(SenderService(), permanent: true);

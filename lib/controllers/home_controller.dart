@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nas_config/core/constants.dart';
 import 'package:nas_config/models/app_model.dart';
 import 'package:nas_config/models/log_data.dart';
 import 'package:nas_config/models/settings.dart';
+import 'package:nas_config/services/logs_service.dart';
 import 'package:nas_config/services/sender/sender_service.dart';
 import 'package:nas_config/services/storage/storage_repository.dart';
 import 'package:nas_config/ui/widgets/shared/controls_dialog.dart';
@@ -14,6 +14,7 @@ enum Status { stopped, started }
 class HomeController extends GetxController {
   final StorageRepository _storageRepository;
   final SenderService _senderService;
+  final LogsService _logsService = Get.find<LogsService>();
 
   late final Rx<AppModel> _appModel;
   AppModel get appModel => _appModel.value;
@@ -62,7 +63,7 @@ class HomeController extends GetxController {
   void hideLogBtn() => _logBtnActive.value = false;
 
   Future<void> openLogsFile() async {
-    final url = Uri.parse('file:${LogData.logFilePath}');
+    final url = _logsService.fileUrl();
     if (!await launchUrl(url)) throw 'Could not launch $url';
   }
 

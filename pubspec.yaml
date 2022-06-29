@@ -45,6 +45,7 @@ dependencies:
   telnet: ^1.0.7
   intl: ^0.17.0
   url_launcher: ^6.1.4
+  path_provider: ^2.0.11
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +103,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
+#flutter pub run msix:publish
 msix_config:
   display_name: Nas Config
   logo_path: C:\releases\logo.png
@@ -112,4 +114,4 @@ msix_config:
     update_blocks_activation: true
     show_prompt: true
     force_update_from_any_version: false
-  msix_version: 1.0.4.0 
+  msix_version: 1.0.6.0
