@@ -107,6 +107,10 @@ flutter:
 msix_config:
   display_name: Nas Config
   logo_path: C:\releases\logo.png
+  start_menu_icon_path: C:\releases\logo.png
+  tile_icon_path: C:\releases\logo.png
+  certificate_path: C:\releases\cert.pfx
+  certificate_password: secret
   app_installer: #<-- app installer configuration
     publish_folder_path: c:\releases
     hours_between_update_checks: 0
@@ -114,4 +118,4 @@ msix_config:
     update_blocks_activation: true
     show_prompt: true
     force_update_from_any_version: false
-  msix_version: 1.0.6.0
+  msix_version: 1.0.8.0

@@ -34,7 +34,8 @@ class HomeController extends GetxController {
   final passwordController = TextEditingController();
   final devicesController = TextEditingController();
   final commandsController = TextEditingController();
-  final logsController = TextEditingController();
+
+  final _logsText = <String>[].obs;
 
   HomeController(this._storageRepository, this._senderService);
 
@@ -69,6 +70,8 @@ class HomeController extends GetxController {
 
   bool startedPerform() => status == Status.started;
 
+  RxList<String> get logsText => _logsText;
+
   @override
   void onInit() {
     final appDefault = AppModel.initDefault();
@@ -78,7 +81,7 @@ class HomeController extends GetxController {
         doneCallback: () => updateStatus(Status.stopped),
         startCallback: () => updateStatus(Status.started));
 
-    _logData.addListener((String val) => {logsController.text = val});
+    _logData.addListener((String val) => {_logsText.add(val)});
 
     debounce(
         _appModel, (AppModel model) => _storageRepository.writeAppModel(model),
@@ -119,7 +122,6 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {
-    logsController.dispose();
     devicesController.dispose();
     commandsController.dispose();
     loginController.dispose();
