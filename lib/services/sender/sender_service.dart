@@ -9,7 +9,6 @@ import 'package:nas_config/models/settings.dart';
 import 'package:nas_config/services/sender/clients/base_client.dart';
 import 'package:nas_config/services/sender/compute_service.dart';
 import 'package:nas_config/core/extensions/either_extension.dart';
-import 'package:nas_config/core/extensions/string_extension.dart';
 
 class SenderService extends GetxService {
   final ComputeService _computeService = Get.find<ComputeService>();
@@ -71,7 +70,7 @@ class SenderService extends GetxService {
   String _buildFormattedEnd() => '\n';
 
   String _buildFormattedCmd(Event e, {bool cut = true}) {
-    final msg = cut ? e.message.cutByLength(length: 500) : e.message;
+    final msg = cut ? 'done'.tr : e.message;
     return '[Command] ${e.cmd}\n[Result] ${msg.trim()}\n';
   }
 

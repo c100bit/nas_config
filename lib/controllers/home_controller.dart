@@ -45,7 +45,11 @@ class HomeController extends GetxController {
         : dialog.stopDialog(_stopPerforming);
   }
 
-  void _startPerforming() => _senderService.start(appModel, _logData);
+  void _startPerforming() {
+    _logsText.clear();
+    _senderService.start(appModel, _logData);
+  }
+
   void _stopPerforming() => _senderService.stop();
 
   void updateProtocol(SettingsProtocol? val) => _appModel.update(

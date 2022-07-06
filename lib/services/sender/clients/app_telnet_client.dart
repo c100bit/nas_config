@@ -89,11 +89,11 @@ class AppTelnetClient extends BaseClient {
   }
 
   void _onError(TelnetClient? client, dynamic error) {
-    print("[ERROR] $error");
+    // print("[ERROR] $error");
   }
 
   void _onDone(TelnetClient? client) {
-    print('done');
+    // print('done');
   }
 
   void _completeRun() =>

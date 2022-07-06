@@ -32,7 +32,7 @@ class TextMsgProcessor extends TelnetProcessor {
   String run(TLMsg msg) {
     final origText = (msg as TLTextMsg).text;
     final text = origText.toLowerCase();
-    print(text);
+
     if (_firstResponse) {
       if (!_isValidDevice(text)) throw InvalidDeviceError();
       _firstResponse = false;
@@ -46,8 +46,6 @@ class TextMsgProcessor extends TelnetProcessor {
     }
     if (_isLogged && _containsWelcome(text)) {
       _executeNextCmd();
-      print('CMD ${lastExecutedCommand()}');
-      print('Result - $origText');
     }
     return _formatText(origText);
   }

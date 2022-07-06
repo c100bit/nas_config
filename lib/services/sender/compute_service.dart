@@ -36,6 +36,7 @@ class ComputeService extends GetxService {
     try {
       final result = _formatter(await _pool.compute<Function, EventList>(item));
       _output.put(result[0]);
+
       _output.putToLog(result[1]);
       _performedCount++;
       if (isDone()) stop();

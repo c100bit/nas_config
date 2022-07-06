@@ -32,6 +32,8 @@ class AppSSHClient extends BaseClient {
       );
     } on SocketException {
       addError(Errors.connectionFailure);
+    } catch (e) {
+      addError(e.toString());
     }
   }
 

@@ -16,16 +16,14 @@ class LogData {
       required this.doneCallback})
       : _data = initStr.obs;
 
-  void put(String value) => _data.value += value;
+  void put(String value) => _data.value = value;
+
   void putToLog(String value) => _logsService.write(value);
 
   String get data => _data.value;
 
-  void _clear() => _data.value = '';
-
   void start() {
     _logsService.open();
-    _clear();
     _logsService.write(_buildLogHeader());
     startCallback();
   }

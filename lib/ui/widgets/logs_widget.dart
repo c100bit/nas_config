@@ -19,7 +19,7 @@ class LogsWidget extends GetView<HomeController> {
         child: Stack(alignment: AlignmentDirectional.topEnd, children: [
           SizedBox(
               width: double.infinity,
-              child: Obx(() => Text(controller.logsText.join('\n')))),
+              child: Obx(() => SelectableText(controller.logsText.join()))),
           Obx(() => Visibility(
               visible: controller.logBtnActive,
               child: LogsButton(controller: controller))),
